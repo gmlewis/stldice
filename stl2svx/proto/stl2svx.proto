@@ -1,0 +1,81 @@
+syntax = "proto3";
+
+package stl2svx;
+
+// Master is the master server node that orchestrates the job.
+service Master {
+  // NewJob starts a new job from the client.
+  rpc NewJob (NewJobRequest) returns (NewJobResponse) {}
+
+  // RegisterAgent notifies the master that a new agent is ready.
+  rpc RegisterAgent (RegisterAgentRequest) returns (RegisterAgentResponse) {}
+}
+
+// Agent is the agent node that performs the work for a single Z slice.
+service Agent {
+  // SliceJob slices an entire job at the given Z height and returns the image.
+  rpc SliceJob (SliceJobRequest) returns (SliceJobResponse) {}
+}
+
+// NewJobRequest is the request to start a new job.
+message NewJobRequest {
+  repeated STLFile stl_files = 1;  // The first STL file is the base.
+
+  int64 dim = 2;  // The desired number of voxels across the largest dimension.
+
+  // The number of divisions across each dimension. Ideally, this would be
+  // calculated by the master based upon the size and complexity of the model,
+  // but for now let the client decide so that it is easy to run experiments
+  // without having to change the server.
+  int64 n_x = 3;
+  int64 n_y = 4;
+  int64 n_z = 5;
+
+  string out_prefix = 6;  // The prefix used for the SVX file and images.
+}
+
+// NewJobResponse is the resulting SVX file from a job.
+message NewJobResponse {
+  bytes svx_file = 1;  // The resulting SVX file, or...
+  string error = 2;  // An error encountered while processing the job.
+}
+
+// RegisterAgentRequest is sent from each agent to the master.
+message RegisterAgentRequest {
+  string address = 1;  // The address this agent can be reached at.
+}
+
+// RegisterAgentResponse is the reply from the master to the agent.
+message RegisterAgentResponse {}
+
+// SliceJobRequests represents an entire job slice to be performed.
+message SliceJobRequest {
+  NewJobRequest new_job_request = 1;
+
+  int64 z = 2;  // The z slice to generate.
+}
+
+// SliceJobResponse is the resulting PNG file from a job slice.
+message SliceJobResponse {
+  bytes png_file = 1;  // The resulting PNG file, or...
+  string error = 2;  // An error encountered while processing the job.
+}
+
+// STLFile contains the data in an STL file.
+message STLFile {
+  repeated Triangle triangles = 1;
+}
+
+// Triangle is a 3-vertex triangle in the mesh.
+message Triangle {
+  Vertex v1 = 1;
+  Vertex v2 = 2;
+  Vertex v3 = 3;
+}
+
+// Vertex is a 3D vertex.
+message Vertex {
+  double x = 1;
+  double y = 2;
+  double z = 3;
+}

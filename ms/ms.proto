@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package ms;
+
+message VoxelRegion {
+  // Number of voxels to process in this subregion. Note that voxels are uniform
+  // dimensions on all three axes.
+  int64 nx = 1;  // equivalent to BinVOX.NX
+  int64 ny = 2;  // equivalent to BinVOX.NY
+  int64 nz = 3;  // equivalent to BinVOX.NZ
+
+  // Minimum Bounding Box (MBB) of region to be voxelized (in millimeters).
+  double tx = 4;  // equivalent to BinVOX.TX
+  double ty = 5;  // equivalent to BinVOX.TY
+  double tz = 6;  // equivalent to BinVOX.TZ
+
+  // Scale representing the width of the largest dimension (in millimeters).
+  double scale = 7;  // equivalent to BinVOX.Scale
+}
+
+// MapIn is the information sent to the mapper to voxelize a mesh.
+message MapIn {
+  VoxelRegion voxel_region = 1;
+
+  bool base = 2;  // true=base, false=cut
+
+  repeated Triangle triangles = 3;
+}
+
+// Triangle is a 3-vertex triangle in the mesh.
+message Triangle {
+  Vertex v1 = 1;
+  Vertex v2 = 2;
+  Vertex v3 = 3;
+}
+
+// Vertex is a 3D vertex.
+message Vertex {
+  double x = 1;
+  double y = 2;
+  double z = 3;
+}

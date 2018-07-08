@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: stl2svx-agent
+spec:
+  replicas: 23
+  selector:
+    stl2svx-agent: "true"
+  template:
+    metadata:
+      labels:
+        name: stl2svx-agent
+        stl2svx-agent: "true"
+        role: agent
+    spec:
+      containers:
+        - name: stl2svx-server
+          args: ["-master", "stl2svx-master:45326"]
+          image: us.gcr.io/gmlewis/stl2svx-server
+          env:
+            - name: MASTER
+              value: "stl2svx-master:45326"
+          resources:
+            limits:
+              cpu: "0.1"
+          volumeMounts:
+            - mountPath: /data
+              name: data
+      volumes:
+        - name: data
+          emptyDir: {}

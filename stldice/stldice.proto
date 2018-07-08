@@ -1,0 +1,65 @@
+syntax = "proto3";
+
+package stldice;
+
+// Interface exported by two unique servers:
+//   1) the STLDice slave (which runs remotely in a compute cluster), and
+//   2) the STLDice master (which runs locally or remotely to support the CLI tools).
+service STLDice {
+  // Add an STL mesh to the voxels (possibly a subregion on the slave).
+  rpc AddSTLMesh (AddSTLMeshRequest) returns (AddSTLMeshReply) {}
+
+  // Subtract an STL mesh from the voxels (possibly a subregion on the slave).
+  rpc SubSTLMesh (SubSTLMeshRequest) returns (SubSTLMeshReply) {}
+
+  // Get back the model voxels as STL (possibly a subregion on the slave).
+  // This also resets the server by clearing out the model.
+  rpc GetSTLMesh (GetSTLMeshRequest) returns (GetSTLMeshReply) {}
+}
+
+message VoxelRegion {
+  // Minimum Bounding Box (MBB) of region to be voxelized (in millimeters).
+  double llx = 1;  // equivalent to BinVOX.TX
+  double lly = 2;  // equivalent to BinVOX.TY
+  double llz = 3;  // equivalent to BinVOX.TZ
+  double urx = 4;
+  double ury = 5;
+  double urz = 6;
+
+  // Number of voxels to process in this subregion. Note that voxels are uniform
+  // dimensions on all three axes.
+  int64 nx = 7;  // equivalent to BinVOX.NX
+  int64 ny = 8;  // equivalent to BinVOX.NY
+  int64 nz = 9;  // equivalent to BinVOX.NZ
+}
+
+// Add an STL mesh to the voxels (possibly a subregion on the slave).
+message AddSTLMeshRequest {
+  VoxelRegion voxel_region = 1;
+
+  // STL file to voxelize and add to the voxel model.
+  bytes stl_file = 2;
+}
+
+message AddSTLMeshReply {}  // For acknowledgement.
+
+// Subtract an STL mesh from the voxels (possibly a subregion on the slave).
+message SubSTLMeshRequest {
+  VoxelRegion voxel_region = 1;
+
+  // STL file to voxelize and subtract from the voxel model.
+  bytes stl_file = 2;
+}
+
+message SubSTLMeshReply {}  // For acknowledgement.
+
+// Get back the model voxels as STL (possibly a subregion on the slave).
+// This also resets the server by clearing out the model.
+message GetSTLMeshRequest {
+  VoxelRegion voxel_region = 1;
+}
+
+message GetSTLMeshReply {
+  // Resulting STL mesh from the voxel model subregion.
+  bytes stl_file = 1;
+}
