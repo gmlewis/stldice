@@ -18,7 +18,7 @@ import (
 	"strings"
 
 	gl "github.com/fogleman/fauxgl"
-	"github.com/gmlewis/stldice/binvox"
+	"github.com/gmlewis/stldice/v2/binvox"
 )
 
 var (

@@ -6,7 +6,7 @@ import (
 	"math"
 
 	gl "github.com/fogleman/fauxgl"
-	pb "github.com/gmlewis/stldice/stl2svx/proto"
+	pb "github.com/gmlewis/stldice/v2/stl2svx/proto"
 )
 
 // STL represents a converted STL file to a mesh.
