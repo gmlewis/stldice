@@ -22,7 +22,7 @@ import (
 	"os"
 
 	gl "github.com/fogleman/fauxgl"
-	"github.com/gmlewis/stldice/v2/binvox"
+	"github.com/gmlewis/stldice/binvox"
 )
 
 var (

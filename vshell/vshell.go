@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	gl "github.com/fogleman/fauxgl"
-	"github.com/gmlewis/stldice/v2/binvox"
+	"github.com/gmlewis/stldice/binvox"
 )
 
 // VShell represents a voxel model (or subregion) in vshell format.

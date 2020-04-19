@@ -14,8 +14,8 @@ import (
 	"strings"
 
 	gl "github.com/fogleman/fauxgl"
-	"github.com/gmlewis/stldice/v2/binvox"
-	pb "github.com/gmlewis/stldice/v2/stldice"
+	"github.com/gmlewis/stldice/binvox"
+	pb "github.com/gmlewis/stldice/stldice"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 )

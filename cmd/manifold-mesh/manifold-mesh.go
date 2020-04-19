@@ -11,7 +11,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/gmlewis/stldice/v2/binvox"
+	"github.com/gmlewis/stldice/binvox"
 )
 
 func main() {

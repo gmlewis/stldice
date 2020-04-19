@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/gmlewis/stldice/v2/binvox"
+	"github.com/gmlewis/stldice/binvox"
 )
 
 // Merge merges one or more binvox files into a single VShell.
