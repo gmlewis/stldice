@@ -206,7 +206,7 @@ func voxelize(row []interface{}) error {
 	}
 	log.Printf("voxelize: sending %v %v voxels to imager...", len(bv.Voxels), vType)
 
-	for _, k := range bv.Voxels {
+	for k := range bv.Voxels {
 		if k.X < 0 || k.Y < 0 || k.Z < 0 {
 			// log.Printf("key %v out-of-bounds (%v,%v,%v)", k, *nX, *nY, *nZ)
 			continue // common for a cut to extend beyond the bounds of the base.

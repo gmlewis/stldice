@@ -15,24 +15,24 @@ type gridCell struct {
 	val [8]float64
 }
 
-type mcManifoldMap map[key]struct{}
+type mcManifoldMap map[Key]struct{}
 
-type voxelLookupMap map[key]float64
+type voxelLookupMap map[Key]float64
 
 func (b *BinVOX) MarchingCubes() *gl.Mesh {
 	// create lookup table
 	lookup := make(voxelLookupMap)   // voxel locations
 	gridCells := make(mcManifoldMap) // grid cell locations
-	for _, v := range b.Voxels {
-		lookup[key{v.X, v.Y, v.Z}] = 1.0
-		gridCells[key{v.X, v.Y, v.Z}] = struct{}{}
-		gridCells[key{v.X - 1, v.Y, v.Z}] = struct{}{}
-		gridCells[key{v.X, v.Y + 1, v.Z}] = struct{}{}
-		gridCells[key{v.X - 1, v.Y + 1, v.Z}] = struct{}{}
-		gridCells[key{v.X, v.Y, v.Z - 1}] = struct{}{}
-		gridCells[key{v.X - 1, v.Y, v.Z - 1}] = struct{}{}
-		gridCells[key{v.X, v.Y + 1, v.Z - 1}] = struct{}{}
-		gridCells[key{v.X - 1, v.Y + 1, v.Z - 1}] = struct{}{}
+	for v := range b.Voxels {
+		lookup[Key{v.X, v.Y, v.Z}] = 1.0
+		gridCells[Key{v.X, v.Y, v.Z}] = struct{}{}
+		gridCells[Key{v.X - 1, v.Y, v.Z}] = struct{}{}
+		gridCells[Key{v.X, v.Y + 1, v.Z}] = struct{}{}
+		gridCells[Key{v.X - 1, v.Y + 1, v.Z}] = struct{}{}
+		gridCells[Key{v.X, v.Y, v.Z - 1}] = struct{}{}
+		gridCells[Key{v.X - 1, v.Y, v.Z - 1}] = struct{}{}
+		gridCells[Key{v.X, v.Y + 1, v.Z - 1}] = struct{}{}
+		gridCells[Key{v.X - 1, v.Y + 1, v.Z - 1}] = struct{}{}
 	}
 
 	var tris []*gl.Triangle
@@ -40,10 +40,10 @@ func (b *BinVOX) MarchingCubes() *gl.Mesh {
 	mmpv := 1.0 / vpmm
 	s := gl.V(mmpv, mmpv, mmpv)
 	t := gl.V(b.TX, b.TY, b.TZ)
-	voxelToVector := func(k key, dx, dy, dz float64) gl.Vector {
-		x := float64(k.x) + 0.5
-		y := float64(k.y) + 0.5
-		z := float64(k.z) + 0.5
+	voxelToVector := func(k Key, dx, dy, dz float64) gl.Vector {
+		x := float64(k.X) + 0.5
+		y := float64(k.Y) + 0.5
+		z := float64(k.Z) + 0.5
 		v := gl.V(x+dx, y+dy, z+dz).Mul(s).Add(t)
 		// vlog("voxelToVector(%v, %v, %v, %v) = %v", k, dx, dy, dz, v)
 		return v
@@ -145,7 +145,7 @@ func polygonize(grid *gridCell) (tris []*gl.Triangle) {
 }
 
 // cell creates a gridCell for the given voxel.
-func cell(k key, m voxelLookupMap, v2v func(k key, dx, dy, dz float64) gl.Vector) *gridCell {
+func cell(k Key, m voxelLookupMap, v2v func(k Key, dx, dy, dz float64) gl.Vector) *gridCell {
 	g := &gridCell{
 		// Ordering according to diagram at http://paulbourke.net/geometry/polygonise/
 		p: [8]gl.Vector{
@@ -160,13 +160,13 @@ func cell(k key, m voxelLookupMap, v2v func(k key, dx, dy, dz float64) gl.Vector
 		},
 		val: [8]float64{
 			m[k],
-			m[key{k.x + 1, k.y, k.z}],
-			m[key{k.x + 1, k.y - 1, k.z}],
-			m[key{k.x, k.y - 1, k.z}],
-			m[key{k.x, k.y, k.z + 1}],
-			m[key{k.x + 1, k.y, k.z + 1}],
-			m[key{k.x + 1, k.y - 1, k.z + 1}],
-			m[key{k.x, k.y - 1, k.z + 1}],
+			m[Key{k.X + 1, k.Y, k.Z}],
+			m[Key{k.X + 1, k.Y - 1, k.Z}],
+			m[Key{k.X, k.Y - 1, k.Z}],
+			m[Key{k.X, k.Y, k.Z + 1}],
+			m[Key{k.X + 1, k.Y, k.Z + 1}],
+			m[Key{k.X + 1, k.Y - 1, k.Z + 1}],
+			m[Key{k.X, k.Y - 1, k.Z + 1}],
 		},
 	}
 	// log.Printf("cell(%v)=%v", k, g)

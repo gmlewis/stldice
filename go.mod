@@ -1,5 +1,7 @@
 module github.com/gmlewis/stldice/v2
 
+go 1.14
+
 require (
 	cloud.google.com/go v0.26.0
 	contrib.go.opencensus.io/exporter/stackdriver v0.6.0 // indirect

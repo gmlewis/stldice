@@ -261,7 +261,7 @@ func voxelize(bvi *bvInfo, zi int, ch chan<- voxelInfo) {
 	}
 	log.Printf("voxelize(%v): sending %v %v voxels to imager(%v)...", zi, len(bv.Voxels), vType, zi)
 
-	for _, k := range bv.Voxels {
+	for k := range bv.Voxels {
 		k.X += bvi.dx
 		k.Y += bvi.dy
 		k.Z += bvi.dz

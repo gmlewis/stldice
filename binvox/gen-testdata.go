@@ -99,10 +99,6 @@ func parseFilename(arg string) (prefix string, args []string, err error) {
 	return parts[0], args, nil
 }
 
-type key struct { // For the template dump
-	X, Y, Z int
-}
-
 func processCompactForm(filename string, digits string) error {
 	voxels := []gl.Voxel{}
 	for _, d := range digits {

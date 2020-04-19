@@ -26,7 +26,7 @@ func TestGrid2Tris(t *testing.T) {
 // inspected continuously for any breakages that may have occurred.
 func TestManifoldMesh(t *testing.T) {
 	tests := []struct {
-		keys []key // 0,0,0 is always present and doesn't need listing
+		keys []Key // 0,0,0 is always present and doesn't need listing
 		want []*gl.Triangle
 	}{
 		{
@@ -83,7 +83,7 @@ func TestManifoldMesh(t *testing.T) {
 			},
 		},
 		{
-			keys: []key{{0, 0, 1}, {0, 0, -1}, {-1, 0, 0}, {1, 0, 0}, {0, -1, 0}, {0, 1, 0}},
+			keys: []Key{{0, 0, 1}, {0, 0, -1}, {-1, 0, 0}, {1, 0, 0}, {0, -1, 0}, {0, 1, 0}},
 			want: []*gl.Triangle{
 				gl.NewTriangleForPoints(gl.V(0, 0, -1), gl.V(0, 0.5, -1), gl.V(0.5, 0.5, -1)),
 				gl.NewTriangleForPoints(gl.V(0, 0, -1), gl.V(0.5, 0.5, -1), gl.V(0.5, 0, -1)),
@@ -328,7 +328,7 @@ func TestManifoldMesh(t *testing.T) {
 			},
 		},
 		{
-			keys: []key{{0, 0, 1}},
+			keys: []Key{{0, 0, 1}},
 			want: []*gl.Triangle{
 				gl.NewTriangleForPoints(gl.V(0, 0, 0), gl.V(0, 0.5, 0), gl.V(0.5, 0.5, 0)),
 				gl.NewTriangleForPoints(gl.V(0, 0, 0), gl.V(0.5, 0.5, 0), gl.V(0.5, 0, 0)),
@@ -413,7 +413,7 @@ func TestManifoldMesh(t *testing.T) {
 			},
 		},
 		{
-			keys: []key{{0, 1, 1}},
+			keys: []Key{{0, 1, 1}},
 			want: []*gl.Triangle{
 				gl.NewTriangleForPoints(gl.V(0, 0, 0), gl.V(0, 0.5, 0), gl.V(0.5, 0.5, 0)),
 				gl.NewTriangleForPoints(gl.V(0, 0, 0), gl.V(0.5, 0.5, 0), gl.V(0.5, 0, 0)),
@@ -506,7 +506,7 @@ func TestManifoldMesh(t *testing.T) {
 			},
 		},
 		{
-			keys: []key{{0, -1, 1}},
+			keys: []Key{{0, -1, 1}},
 			want: []*gl.Triangle{
 				gl.NewTriangleForPoints(gl.V(0, 0, 0), gl.V(0, 0.5, 0), gl.V(0.5, 0.5, 0)),
 				gl.NewTriangleForPoints(gl.V(0, 0, 0), gl.V(0.5, 0.5, 0), gl.V(0.5, 0, 0)),
@@ -599,7 +599,7 @@ func TestManifoldMesh(t *testing.T) {
 			},
 		},
 		{
-			keys: []key{{1, 0, 1}},
+			keys: []Key{{1, 0, 1}},
 			want: []*gl.Triangle{
 				gl.NewTriangleForPoints(gl.V(0, 0, 0), gl.V(0, 0.5, 0), gl.V(0.5, 0.5, 0)),
 				gl.NewTriangleForPoints(gl.V(0, 0, 0), gl.V(0.5, 0.5, 0), gl.V(0.5, 0, 0)),
@@ -692,7 +692,7 @@ func TestManifoldMesh(t *testing.T) {
 			},
 		},
 		{
-			keys: []key{{1, 1, 1}},
+			keys: []Key{{1, 1, 1}},
 			want: []*gl.Triangle{
 				gl.NewTriangleForPoints(gl.V(0, 0, 0), gl.V(0, 0.5, 0), gl.V(0.5, 0.5, 0)),
 				gl.NewTriangleForPoints(gl.V(0, 0, 0), gl.V(0.5, 0.5, 0), gl.V(0.5, 0, 0)),
@@ -793,7 +793,7 @@ func TestManifoldMesh(t *testing.T) {
 			},
 		},
 		{
-			keys: []key{{1, 1, -1}},
+			keys: []Key{{1, 1, -1}},
 			want: []*gl.Triangle{
 				gl.NewTriangleForPoints(gl.V(1, 1, -1), gl.V(1, 1.5, -1), gl.V(1.5, 1.5, -1)),
 				gl.NewTriangleForPoints(gl.V(1, 1, -1), gl.V(1.5, 1.5, -1), gl.V(1.5, 1, -1)),
@@ -894,7 +894,7 @@ func TestManifoldMesh(t *testing.T) {
 			},
 		},
 		{
-			keys: []key{{1, -1, 1}},
+			keys: []Key{{1, -1, 1}},
 			want: []*gl.Triangle{
 				gl.NewTriangleForPoints(gl.V(0, 0, 0), gl.V(0, 0.5, 0), gl.V(0.5, 0.5, 0)),
 				gl.NewTriangleForPoints(gl.V(0, 0, 0), gl.V(0.5, 0.5, 0), gl.V(0.5, 0, 0)),
@@ -995,7 +995,7 @@ func TestManifoldMesh(t *testing.T) {
 			},
 		},
 		{
-			keys: []key{{1, -1, -1}},
+			keys: []Key{{1, -1, -1}},
 			want: []*gl.Triangle{
 				gl.NewTriangleForPoints(gl.V(1, -1, -1), gl.V(1, -0.5, -1), gl.V(1.5, -0.5, -1)),
 				gl.NewTriangleForPoints(gl.V(1, -1, -1), gl.V(1.5, -0.5, -1), gl.V(1.5, -1, -1)),
@@ -1096,7 +1096,7 @@ func TestManifoldMesh(t *testing.T) {
 			},
 		},
 		{
-			keys: []key{{-1, 0, 1}},
+			keys: []Key{{-1, 0, 1}},
 			want: []*gl.Triangle{
 				gl.NewTriangleForPoints(gl.V(0, 0, 0), gl.V(0, 0.5, 0), gl.V(0.5, 0.5, 0)),
 				gl.NewTriangleForPoints(gl.V(0, 0, 0), gl.V(0.5, 0.5, 0), gl.V(0.5, 0, 0)),
@@ -1189,7 +1189,7 @@ func TestManifoldMesh(t *testing.T) {
 			},
 		},
 		{
-			keys: []key{{-1, 1, 1}},
+			keys: []Key{{-1, 1, 1}},
 			want: []*gl.Triangle{
 				gl.NewTriangleForPoints(gl.V(0, 0, 0), gl.V(0, 0.5, 0), gl.V(0.5, 0.5, 0)),
 				gl.NewTriangleForPoints(gl.V(0, 0, 0), gl.V(0.5, 0.5, 0), gl.V(0.5, 0, 0)),
@@ -1290,7 +1290,7 @@ func TestManifoldMesh(t *testing.T) {
 			},
 		},
 		{
-			keys: []key{{-1, 1, -1}},
+			keys: []Key{{-1, 1, -1}},
 			want: []*gl.Triangle{
 				gl.NewTriangleForPoints(gl.V(-1, 1, -1), gl.V(-1, 1.5, -1), gl.V(-0.5, 1.5, -1)),
 				gl.NewTriangleForPoints(gl.V(-1, 1, -1), gl.V(-0.5, 1.5, -1), gl.V(-0.5, 1, -1)),
@@ -1391,7 +1391,7 @@ func TestManifoldMesh(t *testing.T) {
 			},
 		},
 		{
-			keys: []key{{-1, -1, 0}},
+			keys: []Key{{-1, -1, 0}},
 			want: []*gl.Triangle{
 				gl.NewTriangleForPoints(gl.V(-1, -1, 0), gl.V(-1, -0.5, 0), gl.V(-0.5, -0.5, 0)),
 				gl.NewTriangleForPoints(gl.V(-1, -1, 0), gl.V(-0.5, -0.5, 0), gl.V(-0.5, -1, 0)),
@@ -1484,7 +1484,7 @@ func TestManifoldMesh(t *testing.T) {
 			},
 		},
 		{
-			keys: []key{{-1, -1, 1}},
+			keys: []Key{{-1, -1, 1}},
 			want: []*gl.Triangle{
 				gl.NewTriangleForPoints(gl.V(0, 0, 0), gl.V(0, 0.5, 0), gl.V(0.5, 0.5, 0)),
 				gl.NewTriangleForPoints(gl.V(0, 0, 0), gl.V(0.5, 0.5, 0), gl.V(0.5, 0, 0)),
@@ -1585,7 +1585,7 @@ func TestManifoldMesh(t *testing.T) {
 			},
 		},
 		{
-			keys: []key{{-1, -1, -1}},
+			keys: []Key{{-1, -1, -1}},
 			want: []*gl.Triangle{
 				gl.NewTriangleForPoints(gl.V(-1, -1, -1), gl.V(-1, -0.5, -1), gl.V(-0.5, -0.5, -1)),
 				gl.NewTriangleForPoints(gl.V(-1, -1, -1), gl.V(-0.5, -0.5, -1), gl.V(-0.5, -1, -1)),
@@ -1686,7 +1686,7 @@ func TestManifoldMesh(t *testing.T) {
 			},
 		},
 		{
-			keys: []key{},
+			keys: []Key{},
 			want: []*gl.Triangle{
 				gl.NewTriangleForPoints(gl.V(0, 0, 0), gl.V(0, 0.5, 0), gl.V(0.5, 0.5, 0)),
 				gl.NewTriangleForPoints(gl.V(0, 0, 0), gl.V(0.5, 0.5, 0), gl.V(0.5, 0, 0)),
@@ -1741,13 +1741,13 @@ func TestManifoldMesh(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		voxels := []gl.Voxel{
-			{X: 0, Y: 0, Z: 0, Color: gl.White},
-		}
-		for _, k := range test.keys {
-			voxels = append(voxels, gl.Voxel{X: k.x, Y: k.y, Z: k.z, Color: gl.White})
+		voxels := VoxelMap{
+			Key{X: 0, Y: 0, Z: 0}: White,
 		}
 		bv := &BinVOX{Scale: 0, Voxels: voxels} // 1 vpmm
+		for _, k := range test.keys {
+			bv.Add(k.X, k.Y, k.Z)
+		}
 		got := bv.ManifoldMesh()
 		// Sort mesh triangles so that the triangle order doesn't matter.
 		sort.Slice(got.Triangles, TriangleLess(got.Triangles))

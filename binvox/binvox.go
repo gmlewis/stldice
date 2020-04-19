@@ -26,13 +26,51 @@ type BinVOX struct {
 	NX, NY, NZ int     // number of voxels in each dimension
 	TX, TY, TZ float64 // translation (location of origin in world space)
 	Scale      float64 // uniform scale in millimeters
-	Voxels     []gl.Voxel
+	Voxels     VoxelMap
+}
+
+// Key represents the location of a voxel.
+type Key struct { // For the template dump
+	X, Y, Z int
+}
+
+// Color represents a voxel color.
+type Color struct {
+	R, G, B, A float64
+}
+
+var (
+	Black = Color{0, 0, 0, 1}
+	White = Color{1, 1, 1, 1}
+)
+
+// VoxelMap respresents the voxel model.
+type VoxelMap map[Key]Color
+
+// New returns a new BinVOX struct.
+func New(nx, ny, nz int, offx, offy, offz, scale float64) *BinVOX {
+	return &BinVOX{
+		NX:     nx,
+		NY:     ny,
+		NZ:     nz,
+		TX:     offx,
+		TY:     offy,
+		TZ:     offz,
+		Scale:  scale,
+		Voxels: VoxelMap{},
+	}
 }
 
 // String returns a summary string of the BinVOX.
 func (b *BinVOX) String() string {
 	mbb := b.MBB()
 	return fmt.Sprintf("BinVOX(n=[%v,%v,%v], t=[%v,%v,%v], mbb=(%v,%v,%v)-(%v,%v,%v), scale=%v, %v vpmm, %v voxels)", b.NX, b.NY, b.NZ, b.TX, b.TY, b.TZ, mbb.Min.X, mbb.Min.Y, mbb.Min.Z, mbb.Max.X, mbb.Max.Y, mbb.Max.Z, b.Scale, b.VoxelsPerMM(), len(b.Voxels))
+}
+
+// Add adds a voxel to the BinVOX.
+func (b *BinVOX) Add(x, y, z int) {
+	key := Key{X: x, Y: y, Z: z}
+	b.Voxels[key] = White
 }
 
 // Dim returns the maximum dimension (the max of NX, NY, and NZ).

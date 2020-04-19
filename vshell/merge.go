@@ -51,7 +51,7 @@ func (vs *VShell) Add(bv *binvox.BinVOX) (err error) {
 	lookup := make(lookupMap)
 	beforeVPMM := vs.VoxelsPerMM()
 	// log.Printf("GML: beforeVPMM=%v, before scale=%v", beforeVPMM, vs.Scale)
-	for _, v := range bv.Voxels {
+	for v := range bv.Voxels {
 		nx := v.X + dx
 		ny := v.Y + dy
 		nz := v.Z + dz

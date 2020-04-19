@@ -25,22 +25,22 @@ var (
 
 type neighborBitMap byte
 
-type manifoldMap map[key]neighborBitMap
+type manifoldMap map[Key]neighborBitMap
 
 func (b *BinVOX) ManifoldMesh() *gl.Mesh {
 	// create lookup table
 	// lookup := make(map[key]struct{}) // voxel locations
 	gridCells := make(manifoldMap) // grid cell locations
-	for _, v := range b.Voxels {
-		// lookup[key{v.X, v.Y, v.Z}] = struct{}{}
-		gridCells[key{v.X, v.Y, v.Z}] = gridCells[key{v.X, v.Y, v.Z}] | g0
-		gridCells[key{v.X - 1, v.Y, v.Z}] = gridCells[key{v.X - 1, v.Y, v.Z}] | g1
-		gridCells[key{v.X, v.Y + 1, v.Z}] = gridCells[key{v.X, v.Y + 1, v.Z}] | g3
-		gridCells[key{v.X - 1, v.Y + 1, v.Z}] = gridCells[key{v.X - 1, v.Y + 1, v.Z}] | g2
-		gridCells[key{v.X, v.Y, v.Z - 1}] = gridCells[key{v.X, v.Y, v.Z - 1}] | g4
-		gridCells[key{v.X - 1, v.Y, v.Z - 1}] = gridCells[key{v.X - 1, v.Y, v.Z - 1}] | g5
-		gridCells[key{v.X, v.Y + 1, v.Z - 1}] = gridCells[key{v.X, v.Y + 1, v.Z - 1}] | g7
-		gridCells[key{v.X - 1, v.Y + 1, v.Z - 1}] = gridCells[key{v.X - 1, v.Y + 1, v.Z - 1}] | g6
+	for v := range b.Voxels {
+		// lookup[Key{v.X, v.Y, v.Z}] = struct{}{}
+		gridCells[Key{v.X, v.Y, v.Z}] = gridCells[Key{v.X, v.Y, v.Z}] | g0
+		gridCells[Key{v.X - 1, v.Y, v.Z}] = gridCells[Key{v.X - 1, v.Y, v.Z}] | g1
+		gridCells[Key{v.X, v.Y + 1, v.Z}] = gridCells[Key{v.X, v.Y + 1, v.Z}] | g3
+		gridCells[Key{v.X - 1, v.Y + 1, v.Z}] = gridCells[Key{v.X - 1, v.Y + 1, v.Z}] | g2
+		gridCells[Key{v.X, v.Y, v.Z - 1}] = gridCells[Key{v.X, v.Y, v.Z - 1}] | g4
+		gridCells[Key{v.X - 1, v.Y, v.Z - 1}] = gridCells[Key{v.X - 1, v.Y, v.Z - 1}] | g5
+		gridCells[Key{v.X, v.Y + 1, v.Z - 1}] = gridCells[Key{v.X, v.Y + 1, v.Z - 1}] | g7
+		gridCells[Key{v.X - 1, v.Y + 1, v.Z - 1}] = gridCells[Key{v.X - 1, v.Y + 1, v.Z - 1}] | g6
 	}
 
 	var tris []*gl.Triangle
@@ -48,10 +48,10 @@ func (b *BinVOX) ManifoldMesh() *gl.Mesh {
 	mmpv := 1.0 / vpmm
 	s := gl.V(mmpv, mmpv, mmpv)
 	t := gl.V(b.TX, b.TY, b.TZ)
-	voxelToVector := func(k key, dx, dy, dz float64) gl.Vector {
-		x := float64(k.x) + 1
-		y := float64(k.y)
-		z := float64(k.z) + 1
+	voxelToVector := func(k Key, dx, dy, dz float64) gl.Vector {
+		x := float64(k.X) + 1
+		y := float64(k.Y)
+		z := float64(k.Z) + 1
 		v := gl.V(x+dx, y+dy, z+dz).Mul(s).Add(t)
 		// vlog("voxelToVector(%v, %v, %v, %v) = %v", k, dx, dy, dz, v)
 		return v
@@ -70,9 +70,9 @@ func vlog(fmts string, args ...interface{}) {
 	}
 }
 
-type voxelToVectorFunc func(k key, dx, dy, dz float64) gl.Vector
+type voxelToVectorFunc func(k Key, dx, dy, dz float64) gl.Vector
 
-func apply(k key, v2v voxelToVectorFunc, in []*gl.Triangle) (out []*gl.Triangle) {
+func apply(k Key, v2v voxelToVectorFunc, in []*gl.Triangle) (out []*gl.Triangle) {
 	for _, t := range in {
 		p1 := t.V1.Position
 		p2 := t.V2.Position
@@ -83,51 +83,51 @@ func apply(k key, v2v voxelToVectorFunc, in []*gl.Triangle) (out []*gl.Triangle)
 }
 
 func rotateTrisClockwiseZ(top2v voxelToVectorFunc) voxelToVectorFunc {
-	return func(k key, dx, dy, dz float64) gl.Vector { return top2v(k, dy, -dx, dz) }
+	return func(k Key, dx, dy, dz float64) gl.Vector { return top2v(k, dy, -dx, dz) }
 }
 
 func rotateTrisCounterClockwiseZ(top2v voxelToVectorFunc) voxelToVectorFunc {
-	return func(k key, dx, dy, dz float64) gl.Vector { return top2v(k, -dy, dx, dz) }
+	return func(k Key, dx, dy, dz float64) gl.Vector { return top2v(k, -dy, dx, dz) }
 }
 
 func rotateTris180Z(top2v voxelToVectorFunc) voxelToVectorFunc {
-	return func(k key, dx, dy, dz float64) gl.Vector { return top2v(k, -dx, -dy, dz) }
+	return func(k Key, dx, dy, dz float64) gl.Vector { return top2v(k, -dx, -dy, dz) }
 }
 
 func rotateTrisClockwiseX(top2v voxelToVectorFunc) voxelToVectorFunc {
-	return func(k key, dx, dy, dz float64) gl.Vector { return top2v(k, dx, dz, -dy) }
+	return func(k Key, dx, dy, dz float64) gl.Vector { return top2v(k, dx, dz, -dy) }
 }
 
 func rotateTrisCounterClockwiseX(top2v voxelToVectorFunc) voxelToVectorFunc {
-	return func(k key, dx, dy, dz float64) gl.Vector { return top2v(k, dx, -dz, dy) }
+	return func(k Key, dx, dy, dz float64) gl.Vector { return top2v(k, dx, -dz, dy) }
 }
 
 func rotateTris180X(top2v voxelToVectorFunc) voxelToVectorFunc {
-	return func(k key, dx, dy, dz float64) gl.Vector { return top2v(k, dx, -dy, -dz) }
+	return func(k Key, dx, dy, dz float64) gl.Vector { return top2v(k, dx, -dy, -dz) }
 }
 
 func rotateTrisClockwiseY(top2v voxelToVectorFunc) voxelToVectorFunc {
-	return func(k key, dx, dy, dz float64) gl.Vector { return top2v(k, dz, dy, -dx) }
+	return func(k Key, dx, dy, dz float64) gl.Vector { return top2v(k, dz, dy, -dx) }
 }
 
 func rotateTrisCounterClockwiseY(top2v voxelToVectorFunc) voxelToVectorFunc {
-	return func(k key, dx, dy, dz float64) gl.Vector { return top2v(k, -dz, dy, dx) }
+	return func(k Key, dx, dy, dz float64) gl.Vector { return top2v(k, -dz, dy, dx) }
 }
 
 func rotateTris180Y(top2v voxelToVectorFunc) voxelToVectorFunc {
-	return func(k key, dx, dy, dz float64) gl.Vector { return top2v(k, -dx, dy, -dz) }
+	return func(k Key, dx, dy, dz float64) gl.Vector { return top2v(k, -dx, dy, -dz) }
 }
 
 func mirrorX(top2v voxelToVectorFunc) voxelToVectorFunc { // flips normals
-	return func(k key, dx, dy, dz float64) gl.Vector { return top2v(k, -dx, dy, dz) }
+	return func(k Key, dx, dy, dz float64) gl.Vector { return top2v(k, -dx, dy, dz) }
 }
 
 func mirrorY(top2v voxelToVectorFunc) voxelToVectorFunc { // flips normals
-	return func(k key, dx, dy, dz float64) gl.Vector { return top2v(k, dx, -dy, dz) }
+	return func(k Key, dx, dy, dz float64) gl.Vector { return top2v(k, dx, -dy, dz) }
 }
 
 func mirrorZ(top2v voxelToVectorFunc) voxelToVectorFunc { // flips normals
-	return func(k key, dx, dy, dz float64) gl.Vector { return top2v(k, dx, dy, -dz) }
+	return func(k Key, dx, dy, dz float64) gl.Vector { return top2v(k, dx, dy, -dz) }
 }
 
 // flipNormals must make copies so that the originals are not messed up.
@@ -139,7 +139,7 @@ func flipNormals(tris []*gl.Triangle) (out []*gl.Triangle) {
 }
 
 // grid2tris converts grid cells to triangles.
-func grid2tris(k key, n neighborBitMap, v2v voxelToVectorFunc) (tris []*gl.Triangle) {
+func grid2tris(k Key, n neighborBitMap, v2v voxelToVectorFunc) (tris []*gl.Triangle) {
 	vlog("grid2tris: k=%v, n= %v", k, n)
 	switch n { // 256 cases
 	case 0, 0xff: // no faces - all inside or all outside

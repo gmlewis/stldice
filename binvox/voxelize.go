@@ -11,19 +11,11 @@ import (
 
 const epsilon = 1e-9
 
-// key represents an voxel coordinate.
-type key struct {
-	x, y, z int
-}
-
-// voxelMap respresents the voxel model.
-type voxelMap map[key]struct{}
-
 // setMap respresents the voxel shell of mesh intersections.
-type setMap map[key][]*gl.Triangle
+type setMap map[Key][]*gl.Triangle
 
 // addTri adds a triangle to the set if it has not already been added.
-func (s setMap) addTri(k key, tri *gl.Triangle) {
+func (s setMap) addTri(k Key, tri *gl.Triangle) {
 	for _, t := range s[k] {
 		if t == tri {
 			return
@@ -49,10 +41,10 @@ func (b *BinVOX) Voxelize(mesh *gl.Mesh) error {
 	dz := 1.0 / vpmm        // millimeters per voxel
 
 	var mu sync.Mutex // protects the voxels map
-	voxels := make(voxelMap)
-	setVoxelFunc := func(k key) {
+	voxels := make(VoxelMap)
+	setVoxelFunc := func(k Key) {
 		mu.Lock()
-		voxels[k] = struct{}{}
+		voxels[k] = White
 		mu.Unlock()
 	}
 
@@ -78,15 +70,7 @@ func (b *BinVOX) Voxelize(mesh *gl.Mesh) error {
 	}
 	wg.Wait()
 
-	b.Voxels = make([]gl.Voxel, len(voxels))
-	i := 0
-	for k := range voxels {
-		b.Voxels[i].X = k.x
-		b.Voxels[i].Y = k.y
-		b.Voxels[i].Z = k.z
-		b.Voxels[i].Color = gl.White
-		i++
-	}
+	b.Voxels = voxels
 
 	log.Printf("Done creating %v voxels.", len(b.Voxels))
 	return nil
@@ -104,31 +88,23 @@ func (b *BinVOX) VoxelizeZ(mesh *gl.Mesh, zi int) error {
 	dz := 1.0 / vpmm        // millimeters per voxel
 
 	var mu sync.Mutex // protects the voxels map
-	voxels := make(voxelMap)
-	setVoxelFunc := func(k key) {
+	voxels := make(VoxelMap)
+	setVoxelFunc := func(k Key) {
 		mu.Lock()
-		voxels[k] = struct{}{}
+		voxels[k] = White
 		mu.Unlock()
 	}
 
 	// Compute shell of voxel intersections.
 	b.voxelizeZ(mesh, zi, dz, vpmm, setVoxelFunc)
 
-	b.Voxels = make([]gl.Voxel, len(voxels))
-	i := 0
-	for k := range voxels {
-		b.Voxels[i].X = k.x
-		b.Voxels[i].Y = k.y
-		b.Voxels[i].Z = k.z
-		b.Voxels[i].Color = gl.White
-		i++
-	}
+	b.Voxels = voxels
 
 	log.Printf("Done creating %v voxels at z=%v.", len(b.Voxels), zi)
 	return nil
 }
 
-func (b *BinVOX) voxelizeZ(mesh *gl.Mesh, zi int, dz, vpmm float64, setVoxelFunc func(k key)) {
+func (b *BinVOX) voxelizeZ(mesh *gl.Mesh, zi int, dz, vpmm float64, setVoxelFunc func(k Key)) {
 	// log.Printf("voxelizeZ(%v): %v triangles, dz=%v, vpmm=%v", zi, len(mesh.Triangles), dz, vpmm)
 	set := make(setMap)
 	z := b.TZ + (0.5+float64(zi))*dz
@@ -222,7 +198,7 @@ func (b *BinVOX) rasterizeShellPair(pair *intersectionPair, zi int, z, dz, vpmm 
 	plotFunc := func(x, y int) {
 		// log.Printf("plotFunc(%v,%v)", x, y)
 		if y >= 0 && y < b.NY {
-			k := key{x, y, zi}
+			k := Key{x, y, zi}
 			xMinMax.update(x, y)
 			set.addTri(k, pair.tri)
 		}
@@ -281,7 +257,7 @@ func (x xMinMaxMap) update(xi, yi int) {
 }
 
 // floodFill flood-fills the internal voxels within the voxel shell.
-func (b *BinVOX) floodFill(zi int, set setMap, setVoxelFunc func(k key), xMinMax xMinMaxMap) {
+func (b *BinVOX) floodFill(zi int, set setMap, setVoxelFunc func(k Key), xMinMax xMinMaxMap) {
 	var wg sync.WaitGroup
 	for yi, mm := range xMinMax { // yi >= 0 && yi < b.NY
 		wg.Add(1)
@@ -292,7 +268,7 @@ func (b *BinVOX) floodFill(zi int, set setMap, setVoxelFunc func(k key), xMinMax
 				if xi >= b.NX { // Don't care past the subregion of interest.
 					break
 				}
-				k := key{xi, yi, zi}
+				k := Key{xi, yi, zi}
 				if len(set[k]) > 0 { // triangles intersect this voxel.
 					setVoxelFunc(k)
 					var inCount, outCount int

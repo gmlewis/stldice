@@ -5,7 +5,6 @@ import (
 	"sort"
 	"testing"
 
-	gl "github.com/fogleman/fauxgl"
 	"github.com/gmlewis/stldice/v2/binvox"
 )
 
@@ -21,7 +20,7 @@ func TestAdd(t *testing.T) {
 		{
 			name:    "mismatched vpmm",
 			vs:      &VShell{NX: 1, NY: 1, NZ: 1, Scale: 1, Voxels: []VShVoxel{{}}},
-			bv:      &binvox.BinVOX{NX: 1, NY: 1, NZ: 1, Scale: 2, Voxels: []gl.Voxel{{}}},
+			bv:      binvox.New(1, 1, 1, 0, 0, 0, 2),
 			wantErr: true,
 		},
 		{
@@ -53,7 +52,7 @@ func TestAdd(t *testing.T) {
 				NX: 1, NY: 1, NZ: 1,
 				TX: 1, TY: 1, TZ: 1,
 				Scale:  1,
-				Voxels: []gl.Voxel{{}},
+				Voxels: binvox.VoxelMap{binvox.Key{}: binvox.White}, // single voxel at origin
 			},
 			want: &VShell{
 				NX: 2, NY: 2, NZ: 2,
@@ -72,7 +71,7 @@ func TestAdd(t *testing.T) {
 				NX: 1, NY: 1, NZ: 1,
 				TX: -1, TY: -1, TZ: -1,
 				Scale:  1,
-				Voxels: []gl.Voxel{{}}, // single voxel at (-1,-1,-1), no neighbors
+				Voxels: binvox.VoxelMap{binvox.Key{}: binvox.White}, // single voxel at (-1,-1,-1), no neighbors
 			},
 			want: &VShell{
 				NX: 2, NY: 2, NZ: 2, // dimensions updated
@@ -90,36 +89,36 @@ func TestAdd(t *testing.T) {
 			bv: &binvox.BinVOX{
 				NX: 3, NY: 3, NZ: 3,
 				Scale: 1,
-				Voxels: []gl.Voxel{
-					{X: 0, Y: 0, Z: 0},
-					{X: 0, Y: 1, Z: 0},
-					{X: 0, Y: 2, Z: 0},
-					{X: 0, Y: 0, Z: 1},
-					{X: 0, Y: 1, Z: 1},
-					{X: 0, Y: 2, Z: 1},
-					{X: 0, Y: 0, Z: 2},
-					{X: 0, Y: 1, Z: 2},
-					{X: 0, Y: 2, Z: 2},
+				Voxels: binvox.VoxelMap{
+					binvox.Key{X: 0, Y: 0, Z: 0}: binvox.White,
+					binvox.Key{X: 0, Y: 1, Z: 0}: binvox.White,
+					binvox.Key{X: 0, Y: 2, Z: 0}: binvox.White,
+					binvox.Key{X: 0, Y: 0, Z: 1}: binvox.White,
+					binvox.Key{X: 0, Y: 1, Z: 1}: binvox.White,
+					binvox.Key{X: 0, Y: 2, Z: 1}: binvox.White,
+					binvox.Key{X: 0, Y: 0, Z: 2}: binvox.White,
+					binvox.Key{X: 0, Y: 1, Z: 2}: binvox.White,
+					binvox.Key{X: 0, Y: 2, Z: 2}: binvox.White,
 
-					{X: 1, Y: 0, Z: 0},
-					{X: 1, Y: 1, Z: 0},
-					{X: 1, Y: 2, Z: 0},
-					{X: 1, Y: 0, Z: 1},
-					{X: 1, Y: 1, Z: 1},
-					{X: 1, Y: 2, Z: 1},
-					{X: 1, Y: 0, Z: 2},
-					{X: 1, Y: 1, Z: 2},
-					{X: 1, Y: 2, Z: 2},
+					binvox.Key{X: 1, Y: 0, Z: 0}: binvox.White,
+					binvox.Key{X: 1, Y: 1, Z: 0}: binvox.White,
+					binvox.Key{X: 1, Y: 2, Z: 0}: binvox.White,
+					binvox.Key{X: 1, Y: 0, Z: 1}: binvox.White,
+					binvox.Key{X: 1, Y: 1, Z: 1}: binvox.White,
+					binvox.Key{X: 1, Y: 2, Z: 1}: binvox.White,
+					binvox.Key{X: 1, Y: 0, Z: 2}: binvox.White,
+					binvox.Key{X: 1, Y: 1, Z: 2}: binvox.White,
+					binvox.Key{X: 1, Y: 2, Z: 2}: binvox.White,
 
-					{X: 2, Y: 0, Z: 0},
-					{X: 2, Y: 1, Z: 0},
-					{X: 2, Y: 2, Z: 0},
-					{X: 2, Y: 0, Z: 1},
-					{X: 2, Y: 1, Z: 1},
-					{X: 2, Y: 2, Z: 1},
-					{X: 2, Y: 0, Z: 2},
-					{X: 2, Y: 1, Z: 2},
-					{X: 2, Y: 2, Z: 2},
+					binvox.Key{X: 2, Y: 0, Z: 0}: binvox.White,
+					binvox.Key{X: 2, Y: 1, Z: 0}: binvox.White,
+					binvox.Key{X: 2, Y: 2, Z: 0}: binvox.White,
+					binvox.Key{X: 2, Y: 0, Z: 1}: binvox.White,
+					binvox.Key{X: 2, Y: 1, Z: 1}: binvox.White,
+					binvox.Key{X: 2, Y: 2, Z: 1}: binvox.White,
+					binvox.Key{X: 2, Y: 0, Z: 2}: binvox.White,
+					binvox.Key{X: 2, Y: 1, Z: 2}: binvox.White,
+					binvox.Key{X: 2, Y: 2, Z: 2}: binvox.White,
 				},
 			},
 			want: &VShell{
@@ -176,25 +175,25 @@ func TestAdd(t *testing.T) {
 			bv: &binvox.BinVOX{
 				NX: 3, NY: 3, NZ: 3,
 				Scale: 1,
-				Voxels: []gl.Voxel{ // a left-facing "wall" of 9 voxels with no neighbors to the left and 1 to the right.
-					{X: 1, Y: 0, Z: 0},
-					{X: 1, Y: 1, Z: 0},
-					{X: 1, Y: 2, Z: 0},
-					{X: 1, Y: 0, Z: 1},
-					{X: 1, Y: 1, Z: 1},
-					{X: 1, Y: 2, Z: 1},
-					{X: 1, Y: 0, Z: 2},
-					{X: 1, Y: 1, Z: 2},
-					{X: 1, Y: 2, Z: 2},
-					{X: 2, Y: 0, Z: 0},
-					{X: 2, Y: 1, Z: 0},
-					{X: 2, Y: 2, Z: 0},
-					{X: 2, Y: 0, Z: 1},
-					{X: 2, Y: 1, Z: 1},
-					{X: 2, Y: 2, Z: 1},
-					{X: 2, Y: 0, Z: 2},
-					{X: 2, Y: 1, Z: 2},
-					{X: 2, Y: 2, Z: 2},
+				Voxels: binvox.VoxelMap{ // a left-facing "wall" of 9 voxels with no neighbors to the left and 1 to the right.
+					binvox.Key{X: 1, Y: 0, Z: 0}: binvox.White,
+					binvox.Key{X: 1, Y: 1, Z: 0}: binvox.White,
+					binvox.Key{X: 1, Y: 2, Z: 0}: binvox.White,
+					binvox.Key{X: 1, Y: 0, Z: 1}: binvox.White,
+					binvox.Key{X: 1, Y: 1, Z: 1}: binvox.White,
+					binvox.Key{X: 1, Y: 2, Z: 1}: binvox.White,
+					binvox.Key{X: 1, Y: 0, Z: 2}: binvox.White,
+					binvox.Key{X: 1, Y: 1, Z: 2}: binvox.White,
+					binvox.Key{X: 1, Y: 2, Z: 2}: binvox.White,
+					binvox.Key{X: 2, Y: 0, Z: 0}: binvox.White,
+					binvox.Key{X: 2, Y: 1, Z: 0}: binvox.White,
+					binvox.Key{X: 2, Y: 2, Z: 0}: binvox.White,
+					binvox.Key{X: 2, Y: 0, Z: 1}: binvox.White,
+					binvox.Key{X: 2, Y: 1, Z: 1}: binvox.White,
+					binvox.Key{X: 2, Y: 2, Z: 1}: binvox.White,
+					binvox.Key{X: 2, Y: 0, Z: 2}: binvox.White,
+					binvox.Key{X: 2, Y: 1, Z: 2}: binvox.White,
+					binvox.Key{X: 2, Y: 2, Z: 2}: binvox.White,
 				},
 			},
 			// want the old 0,1,1 and the new 1,1,1 voxels to be removed due to being fully enclosed.

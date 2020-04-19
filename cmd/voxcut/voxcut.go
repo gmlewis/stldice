@@ -124,7 +124,7 @@ func main() {
 
 // voxcut cuts the base voxels by the cut voxels and returns the newVoxels.
 // It accounts for different translation settings in the base and cutting voxels.
-func voxcut(base, cut *binvox.BinVOX) (newVoxels []gl.Voxel, err error) {
+func voxcut(base, cut *binvox.BinVOX) (newVoxels binvox.VoxelMap, err error) {
 	if len(cut.Voxels) == 0 {
 		return base.Voxels, nil // Nothing to cut.
 	}
@@ -132,10 +132,7 @@ func voxcut(base, cut *binvox.BinVOX) (newVoxels []gl.Voxel, err error) {
 		return nil, errors.New("base must not be empty")
 	}
 
-	// create lookup table
-	type key struct {
-		X, Y, Z int
-	}
+	newVoxels = binvox.VoxelMap{}
 	vpmm := base.VoxelsPerMM()
 
 	// Map base indices to cut indices by taking into account the translations.
@@ -143,24 +140,20 @@ func voxcut(base, cut *binvox.BinVOX) (newVoxels []gl.Voxel, err error) {
 	dy := int((base.TY - cut.TY) * vpmm)
 	dz := int((base.TZ - cut.TZ) * vpmm)
 	log.Printf("Translating cut voxels by [%v,%v,%v]", dx, dy, dz)
-	cutLU := make(map[key]int)
-	for i, v := range cut.Voxels {
-		cutLU[key{v.X - dx, v.Y - dy, v.Z - dz}] = i
-	}
 
-	for _, v := range base.Voxels {
-		index, ok := cutLU[key{v.X, v.Y, v.Z}]
+	for v, vc := range base.Voxels {
+		c, ok := cut.Voxels[binvox.Key{v.X, v.Y, v.Z}]
 		if !ok { // Nothing to cut - keep voxel.
-			newVoxels = append(newVoxels, v)
+			newVoxels[v] = binvox.White
 			continue
 		}
-		c := cut.Voxels[index].Color
-		r := gl.Clamp(v.Color.R-c.A*c.R, 0, 1)
-		g := gl.Clamp(v.Color.G-c.A*c.G, 0, 1)
-		b := gl.Clamp(v.Color.B-c.A*c.B, 0, 1)
-		a := v.Color.A
+
+		r := gl.Clamp(vc.R-c.A*c.R, 0, 1)
+		g := gl.Clamp(vc.G-c.A*c.G, 0, 1)
+		b := gl.Clamp(vc.B-c.A*c.B, 0, 1)
+		a := vc.A
 		if a > 0 && (r > 0 || g > 0 || b > 0) {
-			newVoxels = append(newVoxels, gl.Voxel{v.X, v.Y, v.Z, gl.Color{r, g, b, a}})
+			newVoxels[binvox.Key{v.X, v.Y, v.Z}] = binvox.Color{r, g, b, a}
 		}
 	}
 
@@ -168,7 +161,7 @@ func voxcut(base, cut *binvox.BinVOX) (newVoxels []gl.Voxel, err error) {
 }
 
 // writeVOX writes a vox file from the base voxels.
-func writeVOX(f io.Writer, base []gl.Voxel) error {
+func writeVOX(f io.Writer, base binvox.VoxelMap) error {
 	header := gl.VOXHeader{Magic: [4]byte{'V', 'O', 'X', ' '}, Version: 150}
 	if err := binary.Write(f, binary.LittleEndian, &header); err != nil {
 		return fmt.Errorf("header: %v", err)
@@ -184,7 +177,7 @@ func writeVOX(f io.Writer, base []gl.Voxel) error {
 	}
 
 	var maxX, maxY, maxZ int
-	for _, v := range base {
+	for v := range base {
 		if v.X > maxX {
 			maxX = v.X
 		}
@@ -213,10 +206,10 @@ func writeVOX(f io.Writer, base []gl.Voxel) error {
 	if err := binary.Write(f, binary.LittleEndian, &numVoxels); err != nil {
 		return fmt.Errorf("numVoxels: %v", err)
 	}
-	for _, v := range base {
+	for v, vc := range base {
 		// TODO(gmlewis): support full color palette.
 		i := int32(0)
-		if v.Color.A >= 0.5 && v.Color.R+v.Color.G+v.Color.B > 1.5 {
+		if vc.A >= 0.5 && vc.R+vc.G+vc.B > 1.5 {
 			i = 1
 		}
 		if err := binary.Write(f, binary.LittleEndian, int32(v.X)); err != nil {

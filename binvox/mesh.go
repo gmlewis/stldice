@@ -9,7 +9,12 @@ import (
 // ToMesh converts a BinVOX to a mesh.
 func (b *BinVOX) ToMesh() *gl.Mesh {
 	log.Printf("Generating mesh for %v voxels...", len(b.Voxels))
-	mesh := gl.NewVoxelMesh(b.Voxels)
+	voxels := []gl.Voxel{}
+	for v := range b.Voxels {
+		voxels = append(voxels, gl.Voxel{X: v.X, Y: v.Y, Z: v.Z})
+	}
+
+	mesh := gl.NewVoxelMesh(voxels)
 	log.Printf("Done generating mesh with %v triangles and %v lines.", len(mesh.Triangles), len(mesh.Lines))
 	mbb := mesh.BoundingBox()
 	log.Printf("Mesh MBB in voxel units = %v", mbb)

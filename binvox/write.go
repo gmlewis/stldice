@@ -53,18 +53,12 @@ func (b *BinVOX) write(w io.Writer, sx, sy, sz, nx, ny, nz int) (int64, error) {
 		nz = b.NZ
 	}
 
-	// create lookup table
-	lookup := map[key]int{}
-	for i, v := range b.Voxels {
-		lookup[key{v.X, v.Y, v.Z}] = i
-	}
-
 	header := fmt.Sprintf(headerFMT, nx, ny, nz, b.TX, b.TY, b.TZ, b.Scale)
 	log.Printf("New header: %v", header)
 	fmt.Fprint(w, header)
 
 	ch := make(chan rle, 100)
-	go b.encode(ch, lookup, sx, sy, sz, nx, ny, nz)
+	go b.encode(ch, b.Voxels, sx, sy, sz, nx, ny, nz)
 
 	var buf bytes.Buffer
 	var numWhite int64
@@ -96,16 +90,16 @@ type rle struct {
 	count int64
 }
 
-func (b *BinVOX) encode(ch chan<- rle, lookup map[key]int, sx, sy, sz, nx, ny, nz int) {
+func (b *BinVOX) encode(ch chan<- rle, lookup VoxelMap, sx, sy, sz, nx, ny, nz int) {
 	var value byte
 	var count int64
 	for xi := sx; xi < sx+nx; xi++ {
 		for zi := sz; zi < sz+nz; zi++ {
 			for yi := sy; yi < sy+ny; yi++ {
-				k := key{xi, yi, zi}
+				k := Key{xi, yi, zi}
 				c := gl.Black
-				if v, ok := lookup[k]; ok {
-					c = b.Voxels[v].Color
+				if _, ok := lookup[k]; ok {
+					c = gl.White
 				}
 				var newValue byte
 				if c.A > 0 && (c.R > 0.5 || c.G > 0.5 || c.B > 0.5) {

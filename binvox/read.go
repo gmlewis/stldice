@@ -8,8 +8,6 @@ import (
 	"os"
 	"regexp"
 	"strconv"
-
-	gl "github.com/fogleman/fauxgl"
 )
 
 var (
@@ -128,7 +126,7 @@ func read(r io.Reader, sx, sy, sz, cx, cy, cz int) (*BinVOX, error) {
 
 	// Read run-length encoded data.
 	var xi, yi, zi int
-	var voxels []gl.Voxel
+	voxels := VoxelMap{}
 	for {
 		value, err := b.ReadByte()
 		if err != nil {
@@ -155,7 +153,7 @@ func read(r io.Reader, sx, sy, sz, cx, cy, cz int) (*BinVOX, error) {
 				return nil, fmt.Errorf("run-length encoding overrun: x index=%v, x dim=%v", xi, nx)
 			}
 			if value == 1 && xi >= sx && xi <= sx+cx && yi >= sy && yi <= sy+cy && zi >= sz && zi <= sz+cz {
-				voxels = append(voxels, gl.Voxel{X: xi, Y: yi, Z: zi, Color: gl.White})
+				voxels[Key{X: xi, Y: yi, Z: zi}] = White
 			}
 			yi++
 			if yi >= ny {
