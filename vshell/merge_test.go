@@ -5,7 +5,7 @@ import (
 	"sort"
 	"testing"
 
-	"github.com/gmlewis/stldice/binvox"
+	"github.com/gmlewis/stldice/v3/binvox"
 )
 
 func TestAdd(t *testing.T) {

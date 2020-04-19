@@ -5,7 +5,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/gmlewis/stldice/binvox"
+	"github.com/gmlewis/stldice/v3/binvox"
 )
 
 func TestVoxCut(t *testing.T) {

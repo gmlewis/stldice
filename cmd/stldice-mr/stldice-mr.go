@@ -19,8 +19,8 @@ import (
 	"github.com/chrislusf/gleam/flow"
 	"github.com/chrislusf/gleam/gio"
 	gl "github.com/fogleman/fauxgl"
-	"github.com/gmlewis/stldice/binvox"
-	"github.com/gmlewis/stldice/mr"
+	"github.com/gmlewis/stldice/v3/binvox"
+	"github.com/gmlewis/stldice/v3/mr"
 	"github.com/golang/protobuf/proto"
 )
 

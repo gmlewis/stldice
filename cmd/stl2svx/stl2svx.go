@@ -24,7 +24,7 @@ import (
 
 	"cloud.google.com/go/storage"
 	gl "github.com/fogleman/fauxgl"
-	"github.com/gmlewis/stldice/binvox"
+	"github.com/gmlewis/stldice/v3/binvox"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/option"
 )

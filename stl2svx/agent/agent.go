@@ -12,9 +12,9 @@ import (
 	"time"
 
 	gl "github.com/fogleman/fauxgl"
-	"github.com/gmlewis/stldice/binvox"
-	pb "github.com/gmlewis/stldice/stl2svx/proto"
-	"github.com/gmlewis/stldice/stl2svx/stl"
+	"github.com/gmlewis/stldice/v3/binvox"
+	pb "github.com/gmlewis/stldice/v3/stl2svx/proto"
+	"github.com/gmlewis/stldice/v3/stl2svx/stl"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 )

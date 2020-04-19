@@ -14,8 +14,8 @@ import (
 
 	"google.golang.org/grpc"
 
-	pb "github.com/gmlewis/stldice/stl2svx/proto"
-	"github.com/gmlewis/stldice/stl2svx/stl"
+	pb "github.com/gmlewis/stldice/v3/stl2svx/proto"
+	"github.com/gmlewis/stldice/v3/stl2svx/stl"
 	"golang.org/x/net/context"
 )
 

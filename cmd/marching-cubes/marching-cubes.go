@@ -12,7 +12,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/gmlewis/stldice/binvox"
+	"github.com/gmlewis/stldice/v3/binvox"
 )
 
 func main() {

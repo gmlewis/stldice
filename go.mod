@@ -1,4 +1,4 @@
-module github.com/gmlewis/stldice
+module github.com/gmlewis/stldice/v3
 
 go 1.14
 

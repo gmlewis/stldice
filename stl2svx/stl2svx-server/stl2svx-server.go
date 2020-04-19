@@ -9,9 +9,9 @@ import (
 	"net"
 	"strings"
 
-	"github.com/gmlewis/stldice/stl2svx/agent"
-	"github.com/gmlewis/stldice/stl2svx/master"
-	pb "github.com/gmlewis/stldice/stl2svx/proto"
+	"github.com/gmlewis/stldice/v3/stl2svx/agent"
+	"github.com/gmlewis/stldice/v3/stl2svx/master"
+	pb "github.com/gmlewis/stldice/v3/stl2svx/proto"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 )
