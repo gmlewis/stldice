@@ -19,8 +19,8 @@ import (
 	"github.com/chrislusf/gleam/flow"
 	"github.com/chrislusf/gleam/gio"
 	gl "github.com/fogleman/fauxgl"
-	"github.com/gmlewis/stldice/v3/binvox"
-	"github.com/gmlewis/stldice/v3/mr"
+	"github.com/gmlewis/stldice/v4/binvox"
+	"github.com/gmlewis/stldice/v4/mr"
 	"github.com/golang/protobuf/proto"
 )
 
@@ -204,14 +204,20 @@ func voxelize(row []interface{}) error {
 	if m.Base {
 		vType = "base"
 	}
-	log.Printf("voxelize: sending %v %v voxels to imager...", len(bv.Voxels), vType)
+	log.Printf("voxelize: sending %v %v voxels to imager...", len(bv.WhiteVoxels), vType)
 
-	for k := range bv.Voxels {
+	keyFunc := func(k binvox.Key) {
 		if k.X < 0 || k.Y < 0 || k.Z < 0 {
 			// log.Printf("key %v out-of-bounds (%v,%v,%v)", k, *nX, *nY, *nZ)
-			continue // common for a cut to extend beyond the bounds of the base.
+			return // common for a cut to extend beyond the bounds of the base.
 		}
 		gio.Emit(k.Z, voxelInfo{k.X, k.Y, m.Base})
+	}
+	for k := range bv.WhiteVoxels {
+		keyFunc(k)
+	}
+	for k := range bv.ColorVoxels {
+		keyFunc(k)
 	}
 	return nil
 }

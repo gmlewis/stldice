@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/gmlewis/stldice/v3/binvox"
+	"github.com/gmlewis/stldice/v4/binvox"
 )
 
 // Merge merges one or more binvox files into a single VShell.
@@ -47,11 +47,11 @@ func (vs *VShell) Add(bv *binvox.BinVOX) (err error) {
 		}
 	}
 
-	log.Printf("creating lookup table for %v new voxels...", len(bv.Voxels))
+	log.Printf("creating lookup table for %v new voxels...", len(bv.WhiteVoxels))
 	lookup := make(lookupMap)
 	beforeVPMM := vs.VoxelsPerMM()
 	// log.Printf("GML: beforeVPMM=%v, before scale=%v", beforeVPMM, vs.Scale)
-	for v := range bv.Voxels {
+	keyFunc := func(v binvox.Key) {
 		nx := v.X + dx
 		ny := v.Y + dy
 		nz := v.Z + dz
@@ -66,6 +66,13 @@ func (vs *VShell) Add(bv *binvox.BinVOX) (err error) {
 			vs.NZ = nz + 1
 		}
 	}
+	for v := range bv.WhiteVoxels {
+		keyFunc(v)
+	}
+	for v := range bv.ColorVoxels {
+		keyFunc(v)
+	}
+
 	afterVPMM := vs.VoxelsPerMM()
 	// log.Printf("GML: afterVPMM=%v", afterVPMM)
 	if beforeVPMM != afterVPMM { // Adjust the Scale to preserve the vpmm.
@@ -141,7 +148,7 @@ func (vs *VShell) update(bv *binvox.BinVOX) (dx, dy, dz int, err error) {
 	}
 
 	if dx >= 0 && dy >= 0 && dz >= 0 {
-		log.Printf("shifting %v new voxels by (%v,%v,%v) to merge with shell", len(bv.Voxels), dx, dy, dz)
+		log.Printf("shifting %v new voxels by (%v,%v,%v) to merge with shell", len(bv.WhiteVoxels), dx, dy, dz)
 		return dx, dy, dz, nil
 	}
 

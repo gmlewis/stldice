@@ -7,7 +7,7 @@ import (
 	"strings"
 
 	gl "github.com/fogleman/fauxgl"
-	"github.com/gmlewis/stldice/v3/binvox"
+	"github.com/gmlewis/stldice/v4/binvox"
 )
 
 // VShell represents a voxel model (or subregion) in vshell format.
@@ -58,7 +58,7 @@ func New(bv *binvox.BinVOX) (*VShell, error) {
 		TX: bv.TX, TY: bv.TY, TZ: bv.TZ,
 		Scale: bv.Scale,
 	}
-	if len(bv.Voxels) > 0 {
+	if len(bv.WhiteVoxels) > 0 {
 		if err := vs.Add(bv); err != nil {
 			return nil, err
 		}

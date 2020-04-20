@@ -16,7 +16,7 @@ var (
 	scaleRE     = regexp.MustCompile(`^scale (\S+)\s*$`)
 )
 
-// Read reads a binvox file and returns a BinVOX.
+// Read reads a binvox file and returns a BinVOX using WhiteVoxels.
 // sx, sy, sz are the starting indices for reading a model.
 // nx, ny, nz are the number of voxels to read in each direction (0=all).
 func Read(filename string, sx, sy, sz, nx, ny, nz int) (*BinVOX, error) {
@@ -30,7 +30,7 @@ func Read(filename string, sx, sy, sz, nx, ny, nz int) (*BinVOX, error) {
 	if err != nil {
 		return nil, fmt.Errorf("Read(%q): %v", filename, err)
 	}
-	log.Printf("Done loading %v voxels from file %q.", len(binVOX.Voxels), filename)
+	log.Printf("Done loading %v voxels from file %q.", len(binVOX.WhiteVoxels), filename)
 	return binVOX, nil
 }
 
@@ -126,7 +126,7 @@ func read(r io.Reader, sx, sy, sz, cx, cy, cz int) (*BinVOX, error) {
 
 	// Read run-length encoded data.
 	var xi, yi, zi int
-	voxels := VoxelMap{}
+	voxels := WhiteVoxelMap{}
 	for {
 		value, err := b.ReadByte()
 		if err != nil {
@@ -136,7 +136,7 @@ func read(r io.Reader, sx, sy, sz, cx, cy, cz int) (*BinVOX, error) {
 			break
 		}
 		if value != 0 && value != 1 {
-			return nil, fmt.Errorf("invalud value: %v", value)
+			return nil, fmt.Errorf("invalid value: %v", value)
 		}
 		count, err := b.ReadByte()
 		if err != nil { // Should not EOF when getting count, so return error
@@ -153,7 +153,7 @@ func read(r io.Reader, sx, sy, sz, cx, cy, cz int) (*BinVOX, error) {
 				return nil, fmt.Errorf("run-length encoding overrun: x index=%v, x dim=%v", xi, nx)
 			}
 			if value == 1 && xi >= sx && xi <= sx+cx && yi >= sy && yi <= sy+cy && zi >= sz && zi <= sz+cz {
-				voxels[Key{X: xi, Y: yi, Z: zi}] = White
+				voxels[Key{X: xi, Y: yi, Z: zi}] = struct{}{}
 			}
 			yi++
 			if yi >= ny {
@@ -170,7 +170,7 @@ func read(r io.Reader, sx, sy, sz, cx, cy, cz int) (*BinVOX, error) {
 	return &BinVOX{
 		NX: nx, NY: ny, NZ: nz,
 		TX: tx, TY: ty, TZ: tz,
-		Scale:  scale,
-		Voxels: voxels,
+		Scale:       scale,
+		WhiteVoxels: voxels,
 	}, nil
 }

@@ -18,7 +18,7 @@ import (
 	"strings"
 
 	gl "github.com/fogleman/fauxgl"
-	"github.com/gmlewis/stldice/v3/binvox"
+	"github.com/gmlewis/stldice/v4/binvox"
 )
 
 const (

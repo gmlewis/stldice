@@ -23,7 +23,7 @@ func (b *BinVOX) MarchingCubes() *gl.Mesh {
 	// create lookup table
 	lookup := make(voxelLookupMap)   // voxel locations
 	gridCells := make(mcManifoldMap) // grid cell locations
-	for v := range b.Voxels {
+	keyFunc := func(v Key) {
 		lookup[Key{v.X, v.Y, v.Z}] = 1.0
 		gridCells[Key{v.X, v.Y, v.Z}] = struct{}{}
 		gridCells[Key{v.X - 1, v.Y, v.Z}] = struct{}{}
@@ -33,6 +33,12 @@ func (b *BinVOX) MarchingCubes() *gl.Mesh {
 		gridCells[Key{v.X - 1, v.Y, v.Z - 1}] = struct{}{}
 		gridCells[Key{v.X, v.Y + 1, v.Z - 1}] = struct{}{}
 		gridCells[Key{v.X - 1, v.Y + 1, v.Z - 1}] = struct{}{}
+	}
+	for v := range b.WhiteVoxels {
+		keyFunc(v)
+	}
+	for v := range b.ColorVoxels {
+		keyFunc(v)
 	}
 
 	var tris []*gl.Triangle

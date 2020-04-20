@@ -26,7 +26,7 @@ data
 		{
 			name:   "no data",
 			header: header,
-			want:   &BinVOX{NX: 256, NY: 256, NZ: 256, TX: -80, TY: -80, TZ: -2.6, Scale: 160, Voxels: VoxelMap{}},
+			want:   &BinVOX{NX: 256, NY: 256, NZ: 256, TX: -80, TY: -80, TZ: -2.6, Scale: 160, WhiteVoxels: WhiteVoxelMap{}},
 		},
 		{
 			name:   "big design",
@@ -34,10 +34,10 @@ data
 			bytes:  []byte{0, 5, 1, 3},
 			want: &BinVOX{
 				NX: 256, NY: 256, NZ: 256, TX: -80, TY: -80, TZ: -2.6, Scale: 160,
-				Voxels: VoxelMap{
-					Key{X: 0, Y: 5, Z: 0}: White,
-					Key{X: 0, Y: 6, Z: 0}: White,
-					Key{X: 0, Y: 7, Z: 0}: White,
+				WhiteVoxels: WhiteVoxelMap{
+					Key{X: 0, Y: 5, Z: 0}: struct{}{},
+					Key{X: 0, Y: 6, Z: 0}: struct{}{},
+					Key{X: 0, Y: 7, Z: 0}: struct{}{},
 				},
 			},
 		},
@@ -52,10 +52,10 @@ data
 			bytes: []byte{0, 5, 1, 3},
 			want: &BinVOX{
 				NX: 2, NY: 2, NZ: 2, TX: -80, TY: -80, TZ: -2.6, Scale: 160,
-				Voxels: VoxelMap{
-					Key{X: 1, Y: 1, Z: 0}: White,
-					Key{X: 1, Y: 0, Z: 1}: White,
-					Key{X: 1, Y: 1, Z: 1}: White,
+				WhiteVoxels: WhiteVoxelMap{
+					Key{X: 1, Y: 1, Z: 0}: struct{}{},
+					Key{X: 1, Y: 0, Z: 1}: struct{}{},
+					Key{X: 1, Y: 1, Z: 1}: struct{}{},
 				},
 			},
 		},
@@ -72,8 +72,8 @@ data
 			cx: 1, cy: 1, cz: 1,
 			want: &BinVOX{
 				NX: 2, NY: 2, NZ: 2, TX: -80, TY: -80, TZ: -2.6, Scale: 160,
-				Voxels: VoxelMap{
-					Key{X: 1, Y: 1, Z: 1}: White,
+				WhiteVoxels: WhiteVoxelMap{
+					Key{X: 1, Y: 1, Z: 1}: struct{}{},
 				},
 			},
 		},

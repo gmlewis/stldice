@@ -10,7 +10,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/gmlewis/stldice/v3/binvox"
+	"github.com/gmlewis/stldice/v4/binvox"
 )
 
 var (

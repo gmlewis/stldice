@@ -26,7 +26,14 @@ type BinVOX struct {
 	NX, NY, NZ int     // number of voxels in each dimension
 	TX, TY, TZ float64 // translation (location of origin in world space)
 	Scale      float64 // uniform scale in millimeters
-	Voxels     VoxelMap
+
+	// Use either WhiteVoxels or ColorVoxels, but not both.
+
+	// WhiteVoxels represents a map of (white) voxels.
+	WhiteVoxels WhiteVoxelMap
+
+	// ColorVoxels represents a map of full-color voxels.
+	ColorVoxels ColorVoxelMap
 }
 
 // Key represents the location of a voxel.
@@ -44,33 +51,72 @@ var (
 	White = Color{1, 1, 1, 1}
 )
 
-// VoxelMap respresents the voxel model.
-type VoxelMap map[Key]Color
+// WhiteVoxelMap respresents the voxel model as a map of (white) voxels.
+type WhiteVoxelMap map[Key]struct{}
+
+// ColorVoxelMap respresents the voxel model as a map of full-color voxels.
+type ColorVoxelMap map[Key]Color
 
 // New returns a new BinVOX struct.
-func New(nx, ny, nz int, offx, offy, offz, scale float64) *BinVOX {
+func New(nx, ny, nz int, offx, offy, offz, scale float64, fullColor bool) *BinVOX {
+	var whiteVoxels WhiteVoxelMap
+	var colorVoxels ColorVoxelMap
+
+	if fullColor {
+		colorVoxels = ColorVoxelMap{}
+	} else {
+		whiteVoxels = WhiteVoxelMap{}
+	}
+
 	return &BinVOX{
-		NX:     nx,
-		NY:     ny,
-		NZ:     nz,
-		TX:     offx,
-		TY:     offy,
-		TZ:     offz,
-		Scale:  scale,
-		Voxels: VoxelMap{},
+		NX:          nx,
+		NY:          ny,
+		NZ:          nz,
+		TX:          offx,
+		TY:          offy,
+		TZ:          offz,
+		Scale:       scale,
+		WhiteVoxels: whiteVoxels,
+		ColorVoxels: colorVoxels,
 	}
 }
 
 // String returns a summary string of the BinVOX.
 func (b *BinVOX) String() string {
 	mbb := b.MBB()
-	return fmt.Sprintf("BinVOX(n=[%v,%v,%v], t=[%v,%v,%v], mbb=(%v,%v,%v)-(%v,%v,%v), scale=%v, %v vpmm, %v voxels)", b.NX, b.NY, b.NZ, b.TX, b.TY, b.TZ, mbb.Min.X, mbb.Min.Y, mbb.Min.Z, mbb.Max.X, mbb.Max.Y, mbb.Max.Z, b.Scale, b.VoxelsPerMM(), len(b.Voxels))
+	return fmt.Sprintf("BinVOX(n=[%v,%v,%v], t=[%v,%v,%v], mbb=(%v,%v,%v)-(%v,%v,%v), scale=%v, %v vpmm, %v white voxels, %v color voxels)",
+		b.NX, b.NY, b.NZ,
+		b.TX, b.TY, b.TZ,
+		mbb.Min.X, mbb.Min.Y, mbb.Min.Z,
+		mbb.Max.X, mbb.Max.Y, mbb.Max.Z,
+		b.Scale, b.VoxelsPerMM(),
+		len(b.WhiteVoxels),
+		len(b.ColorVoxels),
+	)
 }
 
-// Add adds a voxel to the BinVOX.
+// Get gets a voxel from either the WhiteVoxelMap (first), or the ColorVoxel Map.
+func (b *BinVOX) Get(x, y, z int) (color Color, ok bool) {
+	key := Key{X: x, Y: y, Z: z}
+	if _, ok := b.WhiteVoxels[key]; ok {
+		return White, true
+	}
+	if c, ok := b.ColorVoxels[key]; ok {
+		return c, true
+	}
+	return color, false
+}
+
+// Add adds a (white) voxel to the BinVOX WhiteVoxels map.
 func (b *BinVOX) Add(x, y, z int) {
 	key := Key{X: x, Y: y, Z: z}
-	b.Voxels[key] = White
+	b.WhiteVoxels[key] = struct{}{}
+}
+
+// AddColor adds a full-color voxel to the BinVOX ColorVoxels map.
+func (b *BinVOX) AddColor(x, y, z int, c Color) {
+	key := Key{X: x, Y: y, Z: z}
+	b.ColorVoxels[key] = c
 }
 
 // Dim returns the maximum dimension (the max of NX, NY, and NZ).

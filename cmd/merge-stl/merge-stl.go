@@ -9,7 +9,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/gmlewis/stldice/v3/stl"
+	"github.com/gmlewis/stldice/v4/stl"
 )
 
 var (

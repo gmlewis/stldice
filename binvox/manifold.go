@@ -28,11 +28,8 @@ type neighborBitMap byte
 type manifoldMap map[Key]neighborBitMap
 
 func (b *BinVOX) ManifoldMesh() *gl.Mesh {
-	// create lookup table
-	// lookup := make(map[key]struct{}) // voxel locations
 	gridCells := make(manifoldMap) // grid cell locations
-	for v := range b.Voxels {
-		// lookup[Key{v.X, v.Y, v.Z}] = struct{}{}
+	keyFunc := func(v Key) {
 		gridCells[Key{v.X, v.Y, v.Z}] = gridCells[Key{v.X, v.Y, v.Z}] | g0
 		gridCells[Key{v.X - 1, v.Y, v.Z}] = gridCells[Key{v.X - 1, v.Y, v.Z}] | g1
 		gridCells[Key{v.X, v.Y + 1, v.Z}] = gridCells[Key{v.X, v.Y + 1, v.Z}] | g3
@@ -41,6 +38,12 @@ func (b *BinVOX) ManifoldMesh() *gl.Mesh {
 		gridCells[Key{v.X - 1, v.Y, v.Z - 1}] = gridCells[Key{v.X - 1, v.Y, v.Z - 1}] | g5
 		gridCells[Key{v.X, v.Y + 1, v.Z - 1}] = gridCells[Key{v.X, v.Y + 1, v.Z - 1}] | g7
 		gridCells[Key{v.X - 1, v.Y + 1, v.Z - 1}] = gridCells[Key{v.X - 1, v.Y + 1, v.Z - 1}] | g6
+	}
+	for v := range b.WhiteVoxels {
+		keyFunc(v)
+	}
+	for v := range b.ColorVoxels {
+		keyFunc(v)
 	}
 
 	var tris []*gl.Triangle

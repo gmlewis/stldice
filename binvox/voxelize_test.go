@@ -39,14 +39,14 @@ func TestVoxelize(t *testing.T) {
 			t.Fatalf("Voxelize(%v): %v", test.bv, err)
 		}
 
-		got := sortVoxels(test.bv.Voxels)
+		got := sortVoxels(test.bv.WhiteVoxels)
 		if !reflect.DeepEqual(got, test.want) {
 			t.Errorf("Voxelize(%v) =\n%#v\nwant\n%#v", test.bv, got, test.want)
 		}
 	}
 }
 
-func sortVoxels(voxels VoxelMap) []gl.Voxel {
+func sortVoxels(voxels WhiteVoxelMap) []gl.Voxel {
 	var result []gl.Voxel
 	for v := range voxels {
 		result = append(result, gl.Voxel{X: v.X, Y: v.Y, Z: v.Z, Color: gl.White})

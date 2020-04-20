@@ -8,7 +8,7 @@ import (
 	"log"
 	"net"
 
-	pb "github.com/gmlewis/stldice/v3/stldice"
+	pb "github.com/gmlewis/stldice/v4/stldice"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 )

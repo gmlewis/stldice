@@ -12,9 +12,9 @@ import (
 	"time"
 
 	gl "github.com/fogleman/fauxgl"
-	"github.com/gmlewis/stldice/v3/binvox"
-	pb "github.com/gmlewis/stldice/v3/stl2svx/proto"
-	"github.com/gmlewis/stldice/v3/stl2svx/stl"
+	"github.com/gmlewis/stldice/v4/binvox"
+	pb "github.com/gmlewis/stldice/v4/stl2svx/proto"
+	"github.com/gmlewis/stldice/v4/stl2svx/stl"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 )
@@ -160,9 +160,9 @@ func voxelize(bvi *bvInfo, zi int, ch chan<- voxelInfo) {
 	if bvi.base {
 		vType = "base"
 	}
-	log.Printf("voxelize(%v): sending %v %v voxels to imager(%v)...", zi, len(bv.Voxels), vType, zi)
+	log.Printf("voxelize(%v): sending %v %v voxels to imager(%v)...", zi, len(bv.WhiteVoxels), vType, zi)
 
-	for k := range bv.Voxels {
+	keyFunc := func(k binvox.Key) {
 		k.X += bvi.dx
 		k.Y += bvi.dy
 		k.Z += bvi.dz
@@ -170,9 +170,15 @@ func voxelize(bvi *bvInfo, zi int, ch chan<- voxelInfo) {
 			log.Fatalf("voxelize(%v): k{%v,%v,%v} does not match zi=%v", zi, k.X, k.Y, k.Z, zi)
 		}
 		if k.X < 0 || k.Y < 0 || k.Z < 0 {
-			continue // common for a cut to extend beyond the bounds of the base.
+			return // common for a cut to extend beyond the bounds of the base.
 		}
 		ch <- voxelInfo{X: k.X, Y: k.Y, Base: bvi.base}
+	}
+	for k := range bv.WhiteVoxels {
+		keyFunc(k)
+	}
+	for k := range bv.ColorVoxels {
+		keyFunc(k)
 	}
 }
 

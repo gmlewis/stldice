@@ -28,23 +28,23 @@ func (s setMap) addTri(k Key, tri *gl.Triangle) {
 // The voxelized subregion will be: (0,0,0)-(b.NX-1,b.NY-1,b.NZ-1) (inclusive).
 // b.Scale determines the scale of the voxelization. See Dim and VoxelsPerMM.
 //
-// Voxelize overwrites the Voxels slice in b.
+// Voxelize overwrites the WhiteVoxels slice in b.
 func (b *BinVOX) Voxelize(mesh *gl.Mesh) error {
 	if b.NX == 0 || b.NY == 0 || b.NZ == 0 {
 		return fmt.Errorf("mesh dimensions must be non-zero (%v,%v,%v)", b.NX, b.NY, b.NZ)
 	}
 
-	b.Voxels = nil
+	b.WhiteVoxels = nil
 	log.Printf("\n\nVoxelizing %v...", b)
 
 	vpmm := b.VoxelsPerMM() // voxels per millimeter
 	dz := 1.0 / vpmm        // millimeters per voxel
 
 	var mu sync.Mutex // protects the voxels map
-	voxels := make(VoxelMap)
+	voxels := WhiteVoxelMap{}
 	setVoxelFunc := func(k Key) {
 		mu.Lock()
-		voxels[k] = White
+		voxels[k] = struct{}{}
 		mu.Unlock()
 	}
 
@@ -70,9 +70,9 @@ func (b *BinVOX) Voxelize(mesh *gl.Mesh) error {
 	}
 	wg.Wait()
 
-	b.Voxels = voxels
+	b.WhiteVoxels = voxels
 
-	log.Printf("Done creating %v voxels.", len(b.Voxels))
+	log.Printf("Done creating %v voxels.", len(b.WhiteVoxels))
 	return nil
 }
 
@@ -81,26 +81,26 @@ func (b *BinVOX) VoxelizeZ(mesh *gl.Mesh, zi int) error {
 		return fmt.Errorf("mesh dimensions must be non-zero (%v,%v,%v)", b.NX, b.NY, b.NZ)
 	}
 
-	b.Voxels = nil
+	b.WhiteVoxels = nil
 	log.Printf("\n\nVoxelizing z=%v of %v...", zi, b)
 
 	vpmm := b.VoxelsPerMM() // voxels per millimeter
 	dz := 1.0 / vpmm        // millimeters per voxel
 
 	var mu sync.Mutex // protects the voxels map
-	voxels := make(VoxelMap)
+	voxels := WhiteVoxelMap{}
 	setVoxelFunc := func(k Key) {
 		mu.Lock()
-		voxels[k] = White
+		voxels[k] = struct{}{}
 		mu.Unlock()
 	}
 
 	// Compute shell of voxel intersections.
 	b.voxelizeZ(mesh, zi, dz, vpmm, setVoxelFunc)
 
-	b.Voxels = voxels
+	b.WhiteVoxels = voxels
 
-	log.Printf("Done creating %v voxels at z=%v.", len(b.Voxels), zi)
+	log.Printf("Done creating %v voxels at z=%v.", len(b.WhiteVoxels), zi)
 	return nil
 }
 

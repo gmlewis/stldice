@@ -1741,10 +1741,10 @@ func TestManifoldMesh(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		voxels := VoxelMap{
-			Key{X: 0, Y: 0, Z: 0}: White,
+		voxels := WhiteVoxelMap{
+			Key{X: 0, Y: 0, Z: 0}: struct{}{},
 		}
-		bv := &BinVOX{Scale: 0, Voxels: voxels} // 1 vpmm
+		bv := &BinVOX{Scale: 0, WhiteVoxels: voxels} // 1 vpmm
 		for _, k := range test.keys {
 			bv.Add(k.X, k.Y, k.Z)
 		}

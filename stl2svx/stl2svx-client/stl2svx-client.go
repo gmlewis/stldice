@@ -12,7 +12,7 @@ import (
 	"strings"
 
 	gl "github.com/fogleman/fauxgl"
-	pb "github.com/gmlewis/stldice/v3/stl2svx/proto"
+	pb "github.com/gmlewis/stldice/v4/stl2svx/proto"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 )

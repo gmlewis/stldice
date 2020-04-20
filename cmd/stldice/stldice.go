@@ -18,7 +18,7 @@ import (
 	"strings"
 
 	gl "github.com/fogleman/fauxgl"
-	"github.com/gmlewis/stldice/v3/binvox"
+	"github.com/gmlewis/stldice/v4/binvox"
 )
 
 var (
@@ -173,11 +173,11 @@ func diceMesh(mesh *gl.Mesh, mbb *gl.Box, scale float64, dim, nx, ny, nz int, ou
 					return nil, fmt.Errorf("voxelize: %v", err)
 				}
 
-				if len(bv.Voxels) == 0 {
+				if len(bv.WhiteVoxels) == 0 {
 					log.Printf("No voxels created; skipping writing empty file %v", outFile)
 					continue
 				}
-				log.Printf("Writing %v voxels to %v", len(bv.Voxels), outFile)
+				log.Printf("Writing %v voxels to %v", len(bv.WhiteVoxels), outFile)
 				if err := bv.Write(outFile, 0, 0, 0, 0, 0, 0); err != nil {
 					return nil, err
 				}

@@ -38,7 +38,7 @@ data
 `
 
 func (b *BinVOX) write(w io.Writer, sx, sy, sz, nx, ny, nz int) (int64, error) {
-	if len(b.Voxels) == 0 {
+	if len(b.WhiteVoxels) == 0 {
 		fmt.Fprintf(w, headerFMT, 0, 0, 0, b.TX, b.TY, b.TZ, b.Scale)
 		return 0, nil
 	}
@@ -58,7 +58,7 @@ func (b *BinVOX) write(w io.Writer, sx, sy, sz, nx, ny, nz int) (int64, error) {
 	fmt.Fprint(w, header)
 
 	ch := make(chan rle, 100)
-	go b.encode(ch, b.Voxels, sx, sy, sz, nx, ny, nz)
+	go b.encode(ch, b.WhiteVoxels, sx, sy, sz, nx, ny, nz)
 
 	var buf bytes.Buffer
 	var numWhite int64
@@ -90,7 +90,7 @@ type rle struct {
 	count int64
 }
 
-func (b *BinVOX) encode(ch chan<- rle, lookup VoxelMap, sx, sy, sz, nx, ny, nz int) {
+func (b *BinVOX) encode(ch chan<- rle, lookup WhiteVoxelMap, sx, sy, sz, nx, ny, nz int) {
 	var value byte
 	var count int64
 	for xi := sx; xi < sx+nx; xi++ {

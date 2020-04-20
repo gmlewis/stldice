@@ -10,7 +10,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/gmlewis/stldice/v3/vshell"
+	"github.com/gmlewis/stldice/v4/vshell"
 )
 
 var (

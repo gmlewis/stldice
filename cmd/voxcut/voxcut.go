@@ -22,7 +22,7 @@ import (
 	"os"
 
 	gl "github.com/fogleman/fauxgl"
-	"github.com/gmlewis/stldice/v3/binvox"
+	"github.com/gmlewis/stldice/v4/binvox"
 )
 
 var (
@@ -67,11 +67,11 @@ func main() {
 		}
 
 		log.Printf("\n\nCutting voxel model with %q...", flag.Arg(i))
-		base.Voxels, err = voxcut(base, cut)
+		base.WhiteVoxels, err = voxcut(base, cut)
 		if err != nil {
 			log.Fatalf("arg #%v: cut with %q: %v", i, flag.Arg(i), err)
 		}
-		if len(base.Voxels) == 0 {
+		if len(base.WhiteVoxels) == 0 {
 			log.Fatal("result of cut leaves no non-zero voxels... no need to write file")
 		}
 		log.Printf("Done cutting voxel model with %q.", flag.Arg(i))
@@ -91,7 +91,7 @@ func main() {
 		if err != nil {
 			log.Fatalf("Unable to create file %v: %v", *voxFile, err)
 		}
-		if err := writeVOX(f, base.Voxels); err != nil {
+		if err := writeVOX(f, base.WhiteVoxels); err != nil {
 			log.Fatalf("writeVOX: %v", err)
 		}
 		if err := f.Close(); err != nil {
@@ -124,15 +124,15 @@ func main() {
 
 // voxcut cuts the base voxels by the cut voxels and returns the newVoxels.
 // It accounts for different translation settings in the base and cutting voxels.
-func voxcut(base, cut *binvox.BinVOX) (newVoxels binvox.VoxelMap, err error) {
-	if len(cut.Voxels) == 0 {
-		return base.Voxels, nil // Nothing to cut.
+func voxcut(base, cut *binvox.BinVOX) (newVoxels binvox.WhiteVoxelMap, err error) {
+	if len(cut.WhiteVoxels) == 0 {
+		return base.WhiteVoxels, nil // Nothing to cut.
 	}
-	if len(base.Voxels) == 0 {
+	if len(base.WhiteVoxels) == 0 {
 		return nil, errors.New("base must not be empty")
 	}
 
-	newVoxels = binvox.VoxelMap{}
+	newVoxels = binvox.WhiteVoxelMap{}
 	vpmm := base.VoxelsPerMM()
 
 	// Map base indices to cut indices by taking into account the translations.
@@ -141,27 +141,35 @@ func voxcut(base, cut *binvox.BinVOX) (newVoxels binvox.VoxelMap, err error) {
 	dz := int((base.TZ - cut.TZ) * vpmm)
 	log.Printf("Translating cut voxels by [%v,%v,%v]", dx, dy, dz)
 
-	for v, vc := range base.Voxels {
-		c, ok := cut.Voxels[binvox.Key{v.X, v.Y, v.Z}]
+	keyFunc := func(v binvox.Key, vc binvox.Color) {
+		c, ok := cut.Get(v.X, v.Y, v.Z)
 		if !ok { // Nothing to cut - keep voxel.
-			newVoxels[v] = binvox.White
-			continue
+			newVoxels[v] = struct{}{}
+			return
 		}
 
+		// TODO: What does it mean here to start supporting color?!?
 		r := gl.Clamp(vc.R-c.A*c.R, 0, 1)
 		g := gl.Clamp(vc.G-c.A*c.G, 0, 1)
 		b := gl.Clamp(vc.B-c.A*c.B, 0, 1)
 		a := vc.A
 		if a > 0 && (r > 0 || g > 0 || b > 0) {
-			newVoxels[binvox.Key{v.X, v.Y, v.Z}] = binvox.Color{r, g, b, a}
+			// newVoxels[binvox.Key{v.X, v.Y, v.Z}] = binvox.Color{r, g, b, a}
+			newVoxels[binvox.Key{v.X, v.Y, v.Z}] = struct{}{}
 		}
+	}
+	for v := range base.WhiteVoxels {
+		keyFunc(v, binvox.White)
+	}
+	for v, vc := range base.ColorVoxels {
+		keyFunc(v, vc)
 	}
 
 	return newVoxels, nil
 }
 
 // writeVOX writes a vox file from the base voxels.
-func writeVOX(f io.Writer, base binvox.VoxelMap) error {
+func writeVOX(f io.Writer, base binvox.WhiteVoxelMap) error {
 	header := gl.VOXHeader{Magic: [4]byte{'V', 'O', 'X', ' '}, Version: 150}
 	if err := binary.Write(f, binary.LittleEndian, &header); err != nil {
 		return fmt.Errorf("header: %v", err)
@@ -206,12 +214,13 @@ func writeVOX(f io.Writer, base binvox.VoxelMap) error {
 	if err := binary.Write(f, binary.LittleEndian, &numVoxels); err != nil {
 		return fmt.Errorf("numVoxels: %v", err)
 	}
-	for v, vc := range base {
-		// TODO(gmlewis): support full color palette.
-		i := int32(0)
-		if vc.A >= 0.5 && vc.R+vc.G+vc.B > 1.5 {
-			i = 1
-		}
+	// TODO(gmlewis): support full color palette.
+	// for v, vc := range base {
+	for v := range base {
+		// i := int32(0)
+		// if vc.A >= 0.5 && vc.R+vc.G+vc.B > 1.5 {  // WHAT?!?
+		// 	i = 1
+		// }
 		if err := binary.Write(f, binary.LittleEndian, int32(v.X)); err != nil {
 			return fmt.Errorf("X: %v", err)
 		}
@@ -221,6 +230,7 @@ func writeVOX(f io.Writer, base binvox.VoxelMap) error {
 		if err := binary.Write(f, binary.LittleEndian, int32(v.Z)); err != nil {
 			return fmt.Errorf("Z: %v", err)
 		}
+		i := int32(1)
 		if err := binary.Write(f, binary.LittleEndian, i); err != nil {
 			return fmt.Errorf("I: %v", err)
 		}

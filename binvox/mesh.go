@@ -8,10 +8,16 @@ import (
 
 // ToMesh converts a BinVOX to a mesh.
 func (b *BinVOX) ToMesh() *gl.Mesh {
-	log.Printf("Generating mesh for %v voxels...", len(b.Voxels))
+	log.Printf("Generating mesh for %v voxels...", len(b.WhiteVoxels)+len(b.ColorVoxels))
 	voxels := []gl.Voxel{}
-	for v := range b.Voxels {
+	keyFunc := func(v Key) {
 		voxels = append(voxels, gl.Voxel{X: v.X, Y: v.Y, Z: v.Z})
+	}
+	for v := range b.WhiteVoxels {
+		keyFunc(v)
+	}
+	for v := range b.ColorVoxels {
+		keyFunc(v)
 	}
 
 	mesh := gl.NewVoxelMesh(voxels)
