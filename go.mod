@@ -1,6 +1,6 @@
 module github.com/gmlewis/stldice/v4
 
-go 1.19
+go 1.23.0
 
 require (
 	cloud.google.com/go/storage v1.29.0
@@ -8,15 +8,14 @@ require (
 	github.com/fogleman/fauxgl v0.0.0-20200818143847-27cddc103802
 	github.com/golang/protobuf v1.5.3
 	golang.org/x/net v0.38.0
-	golang.org/x/oauth2 v0.7.0
+	golang.org/x/oauth2 v0.27.0
 	google.golang.org/api v0.114.0
 	google.golang.org/grpc v1.56.3
 )
 
 require (
 	cloud.google.com/go v0.110.0 // indirect
-	cloud.google.com/go/compute v1.19.1 // indirect
-	cloud.google.com/go/compute/metadata v0.2.3 // indirect
+	cloud.google.com/go/compute/metadata v0.3.0 // indirect
 	cloud.google.com/go/iam v0.13.0 // indirect
 	github.com/OneOfOne/xxhash v1.2.8 // indirect
 	github.com/fogleman/simplify v0.0.0-20170216171241-d32f302d5046 // indirect
