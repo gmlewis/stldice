@@ -7,7 +7,7 @@ require (
 	github.com/chrislusf/gleam v0.0.0-20210513221725-ec443283eab3
 	github.com/fogleman/fauxgl v0.0.0-20200818143847-27cddc103802
 	github.com/golang/protobuf v1.5.4
-	golang.org/x/net v0.55.0
+	golang.org/x/net v0.56.0
 	golang.org/x/oauth2 v0.34.0
 	google.golang.org/api v0.114.0
 	google.golang.org/grpc v1.79.3
@@ -26,9 +26,9 @@ require (
 	github.com/googleapis/gax-go/v2 v2.7.1 // indirect
 	github.com/philhofer/fwd v1.1.2 // indirect
 	go.opencensus.io v0.24.0 // indirect
-	golang.org/x/sync v0.20.0 // indirect
-	golang.org/x/sys v0.45.0 // indirect
-	golang.org/x/text v0.37.0 // indirect
+	golang.org/x/sync v0.21.0 // indirect
+	golang.org/x/sys v0.46.0 // indirect
+	golang.org/x/text v0.39.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/genproto v0.0.0-20230410155749-daa745c078e1 // indirect
