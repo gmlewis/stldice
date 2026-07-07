@@ -2,7 +2,8 @@
 // .stl file using the marching cubes algorithm.
 //
 // Usage:
-//   marching-cubes infile.binvox outfile.stl
+//
+//	marching-cubes infile.binvox outfile.stl
 package main
 
 import (

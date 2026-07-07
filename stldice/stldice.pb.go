@@ -6,9 +6,11 @@
 Package stldice is a generated protocol buffer package.
 
 It is generated from these files:
+
 	stldice.proto
 
 It has these top-level messages:
+
 	VoxelRegion
 	AddSTLMeshRequest
 	AddSTLMeshReply

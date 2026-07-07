@@ -1,3 +1,4 @@
+//go:build ignore
 // +build ignore
 
 // gen-testdata generates an STL file for the given voxels.

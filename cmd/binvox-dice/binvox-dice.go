@@ -6,7 +6,8 @@
 // hollow if the '-e' is used.
 //
 // Usage:
-//   binvox-dice -factor 8 -mbb "(-80,-80,-2.6)-(80,80,0.6)" base.stl all-cuts.stl ...
+//
+//	binvox-dice -factor 8 -mbb "(-80,-80,-2.6)-(80,80,0.6)" base.stl all-cuts.stl ...
 package main
 
 import (

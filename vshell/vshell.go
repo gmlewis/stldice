@@ -25,8 +25,8 @@ import (
 // region in world space (in millimeters).
 //
 // VShells differ from BinVOX as follows:
-//   * BinVOX lists the presence of each voxel as a sparse matrix
-//   * VShell lists only the voxels exposed on the outer shell of
+//   - BinVOX lists the presence of each voxel as a sparse matrix
+//   - VShell lists only the voxels exposed on the outer shell of
 //     the model. That is, all "internal" voxels are elided. Along
 //     with each outer "shell" voxel, its NeighborBitMap is also retained.
 type VShell struct {

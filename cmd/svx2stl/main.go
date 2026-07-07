@@ -2,7 +2,8 @@
 // .stl file using the marching cubes algorithm.
 //
 // Usage:
-//   svx2stl infile.svx ...
+//
+//	svx2stl infile.svx ...
 package main
 
 import (

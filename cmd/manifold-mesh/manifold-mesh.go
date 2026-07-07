@@ -2,7 +2,8 @@
 // .stl file that is topologically closed (manifold).
 //
 // Usage:
-//   manifold-mesh infile.binvox outfile.stl
+//
+//	manifold-mesh infile.binvox outfile.stl
 package main
 
 import (

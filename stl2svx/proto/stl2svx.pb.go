@@ -6,9 +6,11 @@
 Package stl2svx is a generated protocol buffer package.
 
 It is generated from these files:
+
 	stl2svx.proto
 
 It has these top-level messages:
+
 	NewJobRequest
 	NewJobResponse
 	RegisterAgentRequest

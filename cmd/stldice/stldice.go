@@ -1,8 +1,9 @@
 // stldice dices up STL meshes into one or more 'binvox' files.
 //
 // Usage:
-//   stldice base.stl all-cuts.stl
-//   stldice -mbb "(-80,-80,-2.6)-(80,80,0.6)" all-cuts.stl
+//
+//	stldice base.stl all-cuts.stl
+//	stldice -mbb "(-80,-80,-2.6)-(80,80,0.6)" all-cuts.stl
 package main
 
 import (

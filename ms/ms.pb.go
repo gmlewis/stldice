@@ -6,9 +6,11 @@
 Package ms is a generated protocol buffer package.
 
 It is generated from these files:
+
 	ms.proto
 
 It has these top-level messages:
+
 	VoxelRegion
 	MapIn
 	Triangle

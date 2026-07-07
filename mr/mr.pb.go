@@ -6,9 +6,11 @@
 Package mr is a generated protocol buffer package.
 
 It is generated from these files:
+
 	mr.proto
 
 It has these top-level messages:
+
 	VoxelRegion
 	MapIn
 	Triangle

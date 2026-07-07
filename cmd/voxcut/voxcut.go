@@ -9,7 +9,8 @@
 // can be provided to process only a smaller section of the model.
 //
 // Usage:
-//   voxcut [options] base.binvox [cut1.binvox [cut2.binvox ...]]
+//
+//	voxcut [options] base.binvox [cut1.binvox [cut2.binvox ...]]
 package main
 
 import (
